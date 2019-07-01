@@ -35,6 +35,8 @@ class TestTenseijingo_Open(unittest.TestCase):
         self.obj.open()
         self.assertIsNone(self.obj.session)
 
+    # Todo : When ID/Password is wrong
+
     def tearDown(self):
         if self.obj.session:
             self.obj.session.close()
