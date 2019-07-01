@@ -94,6 +94,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+ini/
+.idea/workspace.xml
 
 # Spyder project settings
 .spyderproject
@@ -112,3 +114,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/workspace.xml
+ini/tele.ini
+ini/user.ini
