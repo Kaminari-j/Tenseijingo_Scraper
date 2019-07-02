@@ -7,17 +7,17 @@ class TestTenseijingo_Init(unittest.TestCase):
     def test_1_should_be_placed_property(self):
         id = 'testid'
         pswd = 'testpswd'
-        result = tenseijingo.tenseijingo(id, pswd)
+        result = tenseijingo(id, pswd)
         self.assertEqual(result.id, id)
         self.assertEqual(result.password, pswd)
 
     def test_2_should_be_raise_error_when_value_none(self):
         with self.assertRaises(ValueError):
-            tenseijingo.tenseijingo(None, 'Test')
+            tenseijingo(None, 'Test')
         with self.assertRaises(ValueError):
-            tenseijingo.tenseijingo('Test', None)
+            tenseijingo('Test', None)
         with self.assertRaises(ValueError):
-            tenseijingo.tenseijingo(None, None)
+            tenseijingo(None, None)
 
 
 class TestTenseijingo_Open(unittest.TestCase):
@@ -26,12 +26,12 @@ class TestTenseijingo_Open(unittest.TestCase):
         cls.user = ini.User()
 
     def test_1_when_success(self):
-        self.obj = tenseijingo.tenseijingo(self.user.id, self.user.password)
+        self.obj = tenseijingo(self.user.id, self.user.password)
         self.obj.open()
         self.assertIsNotNone(self.obj.session)
 
     def test_2_when_fail(self):
-        self.obj = tenseijingo.tenseijingo('test', 'test')
+        self.obj = tenseijingo('test', 'test')
         with self.assertRaises(Exception):
             self.obj.open()
 
@@ -44,7 +44,7 @@ class TestTenseijingo_get_content(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = ini.User()
-        cls.obj = tenseijingo.tenseijingo(cls.user.id, cls.user.password)
+        cls.obj = tenseijingo(cls.user.id, cls.user.password)
         cls.obj.open()
         cls.result_ok = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
@@ -70,7 +70,7 @@ class TestTenseijingo_get_list(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = ini.User()
-        cls.obj = tenseijingo.tenseijingo(cls.user.id, cls.user.password)
+        cls.obj = tenseijingo(cls.user.id, cls.user.password)
         cls.obj.open()
         cls.result = cls.obj.get_list()
 
@@ -100,19 +100,19 @@ class TestTenseijingo_convert_url(unittest.TestCase):
     def test_convert_url(self):
         url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
         pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
-        result = tenseijingo.tenseijingo.convert_url(url)
+        result = tenseijingo.convert_url(url)
         self.assertRegex(result, pattern)
 
 
 class TestTenseijingo_check_url(unittest.TestCase):
     def test_1_when_correct(self):
         url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
-        result = tenseijingo.tenseijingo.check_url(url)
+        result = tenseijingo.check_url(url)
         self.assertTrue(result)
 
     def test_2_when_incorrect(self):
         url = 'javascript:void(0)'
-        result = tenseijingo.tenseijingo.check_url(url)
+        result = tenseijingo.check_url(url)
         self.assertFalse(result)
 
 

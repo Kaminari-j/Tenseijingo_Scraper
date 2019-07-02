@@ -2,7 +2,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re
-from tenseijingo import ini
+import ini
 
 
 class tenseijingo:

@@ -1,1 +1,2 @@
-from . import tenseijingo
+from .tenseijingo import tenseijingo, ini
+
