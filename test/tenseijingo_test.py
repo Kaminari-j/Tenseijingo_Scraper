@@ -32,10 +32,8 @@ class TestTenseijingo_Open(unittest.TestCase):
 
     def test_2_when_fail(self):
         self.obj = tenseijingo.tenseijingo('test', 'test')
-        self.obj.open()
-        self.assertIsNone(self.obj.session)
-
-    # Todo : When ID/Password is wrong
+        with self.assertRaises(Exception):
+            self.obj.open()
 
     def tearDown(self):
         if self.obj.session:

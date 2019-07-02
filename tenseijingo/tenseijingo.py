@@ -41,9 +41,9 @@ class tenseijingo:
                 raise Exception('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
             soup = bs(login_req.text, 'html.parser')
-            if len(soup.findAll('ul', attrs={'class', 'Error'})) > 0:
-                # Todo : When ID/Password is wrong. show alert message to user.
-                self.__session = None
+            login_result = soup.findAll('ul', attrs={'class', 'Error'})
+            if len(login_result) > 0:
+                raise Exception(str.strip(login_result[0].text))
             else:
                 self.__session = s
 
