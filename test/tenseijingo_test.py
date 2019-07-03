@@ -63,6 +63,14 @@ class TestTenseijingo_get_content(unittest.TestCase):
         with self.assertRaises(Exception):
             self.obj.get_content('https://digital.asahi.com/articles/DA3S14098.html')
 
+    def test_5_check_type(self):
+        elements = ('title', 'content')
+        for element in elements:
+            self.assertEqual(type(self.result_ok[element]), str)
+
+        import datetime
+        self.assertEqual(type('datetime'), datetime)
+
 
 class TestTenseijingo_get_list(unittest.TestCase):
     obj = None

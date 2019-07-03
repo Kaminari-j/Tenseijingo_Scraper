@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re
+import datetime
 import ini
 
 
@@ -57,7 +58,7 @@ class tenseijingo:
 
         result = {'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-                  'datetime': soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime']
+                  'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
         return result
 
