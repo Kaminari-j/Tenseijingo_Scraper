@@ -10,16 +10,16 @@ class User:
     __USER_PASSWORD = None
 
     def __init__(self):
-        self.load_env()
+        self.load_env('../ini/user.ini')
         if self.__USER_ID and self.__USER_PASSWORD:
             self.init_status = True
         else:
             self.init_status = False
 
     # 環境変数ロード
-    def load_env(self):
+    def load_env(self, ini_path=None):
         # 環境変数設定
-        env_path = join(dirname(__file__), '../ini/user.ini')
+        env_path = join(dirname(__file__), ini_path)
         load_dotenv(env_path)
         self.__USER_ID = os.environ.get("_USER_ID")
         self.__USER_PASSWORD = os.environ.get("_USER_PASSWORD")
@@ -38,16 +38,16 @@ class TelegramBot:
     __TOKEN = None
 
     def __init__(self):
-        self.load_env()
+        self.load_env('../ini/tele.ini')
         if self.__TOKEN:
             self.init_status = True
         else:
             self.init_status = False
 
     # 環境変数ロード
-    def load_env(self):
+    def load_env(self, ini_path=None):
         # 環境変数設定
-        env_path = join(dirname(__file__), 'ini/tele.ini')
+        env_path = join(dirname(__file__), ini_path)
         load_dotenv(env_path)
         self.__TOKEN = os.environ.get("_TOKEN")
 
