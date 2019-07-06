@@ -118,3 +118,4 @@ dmypy.json
 ini/tele.ini
 ini/user.ini
 test/test_html/
+.idea/dictionaries/Panasonic.xml
