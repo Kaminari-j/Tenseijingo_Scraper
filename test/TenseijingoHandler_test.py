@@ -36,6 +36,7 @@ class Test_ConvertToPdf(unittest.TestCase):
     def setUpClass(cls):
         cls.html_file = './test_html/test.html'
 
-    @unittest.SkipTest
     def test_ok_pattern(self):
-        pass
+        result = handler.convert_to_pdf(self.html_file)
+        self.assertIsNotNone(result)
+

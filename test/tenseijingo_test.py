@@ -32,7 +32,7 @@ class TestTenseijingo_Open(unittest.TestCase):
 
     def test_2_when_fail(self):
         self.obj = tenseijingo('test', 'test')
-        with self.assertRaises(Exception):
+        with self.assertRaises(ConnectionError):
             self.obj.open()
 
     def tearDown(self):
@@ -68,8 +68,7 @@ class TestTenseijingo_get_content(unittest.TestCase):
         for element in elements:
             self.assertEqual(type(self.result_ok[element]), str)
 
-        import datetime
-        self.assertEqual(type('datetime'), datetime)
+        self.assertEqual(type('datetime'), str)
 
 
 class TestTenseijingo_get_list(unittest.TestCase):

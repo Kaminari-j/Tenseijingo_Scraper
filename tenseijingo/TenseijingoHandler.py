@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup as bs
-
 
 class handler():
     @staticmethod
@@ -17,3 +15,6 @@ class handler():
         return html
 
     # Todo : html to pdf converter
+    @staticmethod
+    def convert_to_pdf(html: str):
+        return html
