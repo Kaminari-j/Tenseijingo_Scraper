@@ -117,3 +117,6 @@ dmypy.json
 .idea/workspace.xml
 ini/tele.ini
 ini/user.ini
+html
+test/test_html/
+.idea/dictionaries/Panasonic.xml

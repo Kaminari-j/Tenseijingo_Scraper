@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re
+import datetime
 import ini
 
 
@@ -38,12 +39,12 @@ class tenseijingo:
         with requests.Session() as s:
             login_req = s.post(self.__login_url, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
-                raise Exception('Connection Failed')
+                raise ConnectionError('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
             soup = bs(login_req.text, 'html.parser')
             login_result = soup.findAll('ul', attrs={'class', 'Error'})
             if len(login_result) > 0:
-                raise Exception(str.strip(login_result[0].text))
+                raise ConnectionError(str.strip(login_result[0].text))
             else:
                 self.__session = s
 
@@ -57,7 +58,7 @@ class tenseijingo:
 
         result = {'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-                  'datetime': soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime']
+                  'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
         return result
 
@@ -88,6 +89,8 @@ class tenseijingo:
     def close(self):
         if self.__session:
             self.__session.close()
+            # Todo: Is it work?
+            self.__session = None
 
 
 if __name__ == '__main__':

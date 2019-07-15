@@ -32,7 +32,7 @@ class TestTenseijingo_Open(unittest.TestCase):
 
     def test_2_when_fail(self):
         self.obj = tenseijingo('test', 'test')
-        with self.assertRaises(Exception):
+        with self.assertRaises(ConnectionError):
             self.obj.open()
 
     def tearDown(self):
@@ -62,6 +62,13 @@ class TestTenseijingo_get_content(unittest.TestCase):
     def test_4_should_raise_when_failed_to_load(self):
         with self.assertRaises(Exception):
             self.obj.get_content('https://digital.asahi.com/articles/DA3S14098.html')
+
+    def test_5_check_type(self):
+        elements = ('title', 'content')
+        for element in elements:
+            self.assertEqual(type(self.result_ok[element]), str)
+
+        self.assertEqual(type('datetime'), str)
 
 
 class TestTenseijingo_get_list(unittest.TestCase):
