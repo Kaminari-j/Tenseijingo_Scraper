@@ -17,7 +17,7 @@ if __name__ == '__main__':
         s.open()
 
         article_list = s.get_list()
-        for article in article_list[0:1]:
+        for article in article_list[0:]:
             content = s.get_content(article)
             content_date = content['datetime'].strftime("%Y%m%d")
 
@@ -27,11 +27,8 @@ if __name__ == '__main__':
                 html = handler.making_html(content)
                 with open(html_name, 'w') as f:
                     f.write(html)
-                    #config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
-                    # Todo : fix below phrase
-                    #pdfkit.from_file(f, fname + '.pdf')
-                    # Todo : seperate making html (with session) and making pdf
                     f.close()
+                handler.convert_to_pdf(html_name)
     except ConnectionError as e:
         print(e)
     s.close()
