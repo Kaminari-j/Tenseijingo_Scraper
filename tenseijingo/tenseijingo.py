@@ -13,13 +13,6 @@ class tenseijingo:
         'login_id': None,
         'login_password': None
     }
-    __session = None
-    __login_url = 'https://digital.asahi.com/login/login.html'
-    __list_url = 'https://www.asahi.com/news/tenseijingo.html'
-
-    @property
-    def session(self):
-        return self.__session
 
     @property
     def id(self):
@@ -36,8 +29,9 @@ class tenseijingo:
         self.__LOGIN_INFO['login_password'] = password
 
     def __open_session(self):
+        __login_url = 'https://digital.asahi.com/login/login.html'
         with requests.Session() as s:
-            login_req = s.post(self.__login_url, data=self.__LOGIN_INFO)
+            login_req = s.post(__login_url, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
                 raise ConnectionError('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
@@ -69,7 +63,8 @@ class tenseijingo:
         return dic_result
 
     def get_list(self):
-        soup = self.__get_contents_from_url(self.__list_url)
+        __list_url = 'https://www.asahi.com/news/tenseijingo.html'
+        soup = self.__get_contents_from_url(__list_url)
         panels = soup.findAll('div', attrs={'class', 'TabPanel'})
         dic_article = dict()
         for panel in panels:
@@ -135,4 +130,4 @@ if __name__ == '__main__':
     s = tenseijingo(user.id, user.password)
     result = s.get_list()
     #result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
-    
+

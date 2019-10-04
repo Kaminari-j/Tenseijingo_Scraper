@@ -110,7 +110,7 @@ class TestTenseijingo_get_list(unittest.TestCase):
             # is element 8digits
             self.assertEqual(len(item), 8)
             # is element date
-            self.assertRegexpMatches(item, date_pattern)
+            self.assertRegex(item, date_pattern)
 
     def test_4_elements_of_dict_level2(self):
         title_pattern = '\w+'
@@ -118,10 +118,10 @@ class TestTenseijingo_get_list(unittest.TestCase):
         for item in self.result.values():
             for key, value in item.items():
                 if key == 'title':
-                    self.assertRegexpMatches(value, title_pattern)
+                    self.assertRegex(value, title_pattern)
                 if key == 'url':
                     # https://digital.asahi.com/articles/DA3S14049498.html
-                    self.assertRegexpMatches(value, url_pattern)
+                    self.assertRegex(value, url_pattern)
 
 
 class TestTenseijingo_convert_url(unittest.TestCase):
