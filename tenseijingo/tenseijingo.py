@@ -35,7 +35,7 @@ class tenseijingo:
         self.__LOGIN_INFO['login_id'] = id
         self.__LOGIN_INFO['login_password'] = password
 
-    def open(self):
+    def __open_session(self):
         with requests.Session() as s:
             login_req = s.post(self.__login_url, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
@@ -47,6 +47,13 @@ class tenseijingo:
                 raise ConnectionError(str.strip(login_result[0].text))
             else:
                 self.__session = s
+
+    # requests.Session
+    def __close_session(self):
+        if self.__session:
+            self.__session.__close_session()
+            # Todo: Is it work?
+            self.__session = None
 
     def get_content(self, url):
         # https://digital.asahi.com/articles/DA3S14049498.html
@@ -72,25 +79,18 @@ class tenseijingo:
         result = list()
         for link in soup.findAll('div', attrs={'class', 'TabMod'})[0].findAll({'a', 'href'}):
             attr = link.attrs['href']
-            if tenseijingo.check_url(attr):
-                result.append(tenseijingo.convert_url(attr))
+            if tenseijingo.__check_url(attr):
+                result.append(tenseijingo.__convert_url(attr))
         return result if len(result) > 0 else None
 
     @staticmethod
-    def convert_url(url: str):
+    def __convert_url(url: str):
         return 'https://digital.asahi.com' + url.split('?')[0]
 
     @staticmethod
-    def check_url(url: str):
+    def __check_url(url: str):
         pattern = '^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
         return True if re.compile(pattern).search(url) else False
-
-    # requests.Session
-    def close(self):
-        if self.__session:
-            self.__session.close()
-            # Todo: Is it work?
-            self.__session = None
 
 
 class TenseijingoHandler():
@@ -108,7 +108,6 @@ class TenseijingoHandler():
                     </html>'
         return html
 
-    # Todo : html to pdf converter
     @staticmethod
     def convert_to_pdf(html):
         import os
@@ -134,7 +133,7 @@ class TenseijingoHandler():
 if __name__ == '__main__':
     user = ini.User()
     s = tenseijingo(user.id, user.password)
-    s.open()
+    s.__open_session()
     result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     print(result)

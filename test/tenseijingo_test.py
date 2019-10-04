@@ -27,17 +27,17 @@ class TestTenseijingo_Open(unittest.TestCase):
 
     def test_1_when_success(self):
         self.obj = tenseijingo(self.user.id, self.user.password)
-        self.obj.open()
+        self.obj._tenseijingo__open_session()
         self.assertIsNotNone(self.obj.session)
 
     def test_2_when_fail(self):
         self.obj = tenseijingo('test', 'test')
         with self.assertRaises(ConnectionError):
-            self.obj.open()
+            self.obj._tenseijingo__open_session()
 
     def tearDown(self):
         if self.obj.session:
-            self.obj.session.close()
+            self.obj._tenseijingo__close_session()
 
 
 class TestTenseijingo_get_content(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestTenseijingo_get_content(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj.open()
+        cls.obj._tenseijingo__open_session()
         cls.result_ok = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_1_result_should_be_not_none(self):
@@ -78,7 +78,7 @@ class TestTenseijingo_get_list(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj.open()
+        cls.obj._tenseijingo__open_session()
         cls.result = cls.obj.get_list()
 
     def test_1_result_is_not_none(self):
@@ -100,26 +100,26 @@ class TestTenseijingo_get_list(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.obj.close()
+        cls.obj.__close_session()
 
 
 class TestTenseijingo_convert_url(unittest.TestCase):
     def test_convert_url(self):
         url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
         pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
-        result = tenseijingo.convert_url(url)
+        result = tenseijingo._tenseijingo__convert_url(url)
         self.assertRegex(result, pattern)
 
 
 class TestTenseijingo_check_url(unittest.TestCase):
     def test_1_when_correct(self):
         url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
-        result = tenseijingo.check_url(url)
+        result = tenseijingo._tenseijingo__check_url(url)
         self.assertTrue(result)
 
     def test_2_when_incorrect(self):
         url = 'javascript:void(0)'
-        result = tenseijingo.check_url(url)
+        result = tenseijingo._tenseijingo__check_url(url)
         self.assertFalse(result)
 
 
@@ -128,7 +128,7 @@ class Test_Making_html(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj.open()
+        cls.obj._tenseijingo__open_session()
         cls.content_result = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_result_is_not_none(self):
@@ -149,7 +149,7 @@ class Test_Making_html(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.obj.close()
+        cls.obj.__close_session()
 
 
 class Test_ConvertToPdf(unittest.TestCase):
