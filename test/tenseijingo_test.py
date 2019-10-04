@@ -20,24 +20,41 @@ class TestTenseijingo_Init(unittest.TestCase):
             tenseijingo(None, None)
 
 
-class TestTenseijingo_Open(unittest.TestCase):
+class TestTenseijingo_Open_Session(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = ini.User()
 
     def test_1_when_success(self):
         self.obj = tenseijingo(self.user.id, self.user.password)
-        self.obj._tenseijingo__open_session()
-        self.assertIsNotNone(self.obj.session)
+        self.assertIsNotNone(self.obj._tenseijingo__open_session())
 
     def test_2_when_fail(self):
         self.obj = tenseijingo('test', 'test')
         with self.assertRaises(ConnectionError):
             self.obj._tenseijingo__open_session()
 
-    def tearDown(self):
-        if self.obj.session:
-            self.obj._tenseijingo__close_session()
+
+class TestTenseijingo_Get_Contents_From_Url(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.user = ini.User()
+        cls.obj = tenseijingo(cls.user.id, cls.user.password)
+
+    def test_when_success(self):
+        from bs4 import BeautifulSoup
+        self.assertIsInstance(
+            self.obj._tenseijingo__get_contents_from_url('https://digital.asahi.com/articles/DA3S14049498.html'),
+            BeautifulSoup
+        )
+
+    def test_when_failed_to_get_contents(self):
+        with self.assertRaises(ConnectionError):
+            self.obj._tenseijingo__get_contents_from_url('https://digital.asahi.com/articles/DA123.html')
+
+    def test_when_url_is_none(self):
+        with self.assertRaises(ValueError):
+            self.obj._tenseijingo__get_contents_from_url('')
 
 
 class TestTenseijingo_get_content(unittest.TestCase):
@@ -45,7 +62,6 @@ class TestTenseijingo_get_content(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj._tenseijingo__open_session()
         cls.result_ok = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_1_result_should_be_not_none(self):
@@ -69,10 +85,6 @@ class TestTenseijingo_get_content(unittest.TestCase):
             self.assertEqual(type(self.result_ok[element]), str)
         self.assertEqual(type('datetime'), str)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.obj._tenseijingo__close_session()
-
 
 class TestTenseijingo_get_list(unittest.TestCase):
     obj = None
@@ -81,7 +93,6 @@ class TestTenseijingo_get_list(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj._tenseijingo__open_session()
         cls.result = cls.obj.get_list()
 
     def test_1_result_is_not_none(self):
@@ -91,19 +102,26 @@ class TestTenseijingo_get_list(unittest.TestCase):
         count = len(self.result)
         self.assertTrue(1 <= count <= 122)
 
-    def test_3_elements_of_list_are_string(self):
+    def test_3_elements_of_dict_level1(self):
+        date_pattern = '^20\d\d[0-1]{1}\d[0-3]\d$'
         for item in self.result:
+            # is element string
             self.assertIsInstance(item, str)
+            # is element 8digits
+            self.assertEqual(len(item), 8)
+            # is element date
+            self.assertRegexpMatches(item, date_pattern)
 
-    def test_4_elements_of_list_are_url(self):
-        # https://digital.asahi.com/articles/DA3S14049498.html
-        pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
-        for item in self.result:
-            self.assertIsNotNone(re.compile(pattern).match(item))
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.obj._tenseijingo__close_session()
+    def test_4_elements_of_dict_level2(self):
+        title_pattern = '\w+'
+        url_pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
+        for item in self.result.values():
+            for key, value in item.items():
+                if key == 'title':
+                    self.assertRegexpMatches(value, title_pattern)
+                if key == 'url':
+                    # https://digital.asahi.com/articles/DA3S14049498.html
+                    self.assertRegexpMatches(value, url_pattern)
 
 
 class TestTenseijingo_convert_url(unittest.TestCase):
@@ -131,7 +149,6 @@ class Test_Making_html(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.obj._tenseijingo__open_session()
         cls.content_result = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_result_is_not_none(self):
@@ -149,10 +166,6 @@ class Test_Making_html(unittest.TestCase):
 
         self.assertNotEqual(len(head), 0, "There's no head")
         self.assertNotEqual(len(body), 0, "There's no body")
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.obj._tenseijingo__close_session()
 
 
 class Test_ConvertToPdf(unittest.TestCase):
