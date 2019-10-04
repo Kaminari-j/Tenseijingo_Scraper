@@ -51,7 +51,7 @@ class tenseijingo:
     # requests.Session
     def __close_session(self):
         if self.__session:
-            self.__session.__close_session()
+            self.__session.close()
             # Todo: Is it work?
             self.__session = None
 

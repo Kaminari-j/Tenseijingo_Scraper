@@ -67,8 +67,11 @@ class TestTenseijingo_get_content(unittest.TestCase):
         elements = ('title', 'content')
         for element in elements:
             self.assertEqual(type(self.result_ok[element]), str)
-
         self.assertEqual(type('datetime'), str)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.obj._tenseijingo__close_session()
 
 
 class TestTenseijingo_get_list(unittest.TestCase):
@@ -100,7 +103,7 @@ class TestTenseijingo_get_list(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.obj.__close_session()
+        cls.obj._tenseijingo__close_session()
 
 
 class TestTenseijingo_convert_url(unittest.TestCase):
@@ -149,7 +152,7 @@ class Test_Making_html(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.obj.__close_session()
+        cls.obj._tenseijingo__close_session()
 
 
 class Test_ConvertToPdf(unittest.TestCase):
@@ -163,6 +166,7 @@ class Test_ConvertToPdf(unittest.TestCase):
         # Todo: check if file exists
 
     # Todo: Make testcase by OS
+
 
 if __name__ == '__main__':
     unittest.main()
