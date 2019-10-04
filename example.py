@@ -1,5 +1,4 @@
-from tenseijingo import tenseijingo, ini
-from tenseijingo.TenseijingoHandler import handler
+from tenseijingo import tenseijingo, ini, TenseijingoHandler as handler
 import datetime
 import pdfkit
 import os
