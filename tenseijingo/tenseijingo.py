@@ -42,7 +42,7 @@ class tenseijingo:
             else:
                 return s
 
-    def __get_contents_from_url(self, url):
+    def __get_contents_from_url(self, url: str):
         if url:
             with self.__open_session() as s:
                 # https://digital.asahi.com/articles/DA3S14049498.html
@@ -54,9 +54,24 @@ class tenseijingo:
         else:
             raise ValueError
 
+    def __get_contents_from_urls(self, urls: list):
+        if urls:
+            with self.__open_session() as s:
+                results = list()
+                for url in urls:
+                    res = s.get(url)
+                    if res.status_code != 200:
+                        raise ConnectionError
+                    res.encoding = res.apparent_encoding
+                    results.append(bs(res.text, 'html.parser'))
+                return results
+        else:
+            raise ValueError
+
     def get_content(self, url):
         soup = self.__get_contents_from_url(url)
-        dic_result = {'title': soup.findAll('h1')[0].text,
+        dic_result = {
+                  'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
                   'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
@@ -72,15 +87,17 @@ class tenseijingo:
             for item in list_items:
                 _date = item['data-date']
                 _title = item.findAll('em')[0].text
-                _url = item.findAll('a')[0]['href']
-                if tenseijingo.__check_url(_url):
-                    _url = tenseijingo.__convert_url(_url)
+                _url = tenseijingo.__convert_url(item.findAll('a')[0]['href'])
+
                 dic_article[_date] = {'title': _title, 'url': _url}
         return dic_article if len(dic_article) > 0 else None
 
     @staticmethod
     def __convert_url(url: str):
-        return 'https://digital.asahi.com' + url.split('?')[0]
+        if tenseijingo.__check_url(url):
+            return 'https://digital.asahi.com' + url.split('?')[0]
+        else:
+            raise ValueError
 
     @staticmethod
     def __check_url(url: str):

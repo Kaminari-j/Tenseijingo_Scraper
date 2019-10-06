@@ -48,6 +48,21 @@ class TestTenseijingo_Get_Contents_From_Url(unittest.TestCase):
             BeautifulSoup
         )
 
+
+class TestTenseijingo_Get_Contents_From_Urls(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.user = ini.User()
+        cls.obj = tenseijingo(cls.user.id, cls.user.password)
+
+    def test_when_success(self):
+        from bs4 import BeautifulSoup
+        results = self.obj._tenseijingo__get_contents_from_url('https://digital.asahi.com/articles/DA3S14049498.html')
+        self.assertIsInstance(results, list)
+        for res in results:
+            self.assertIsInstance(res, BeautifulSoup)
+
+
     def test_when_failed_to_get_contents(self):
         with self.assertRaises(ConnectionError):
             self.obj._tenseijingo__get_contents_from_url('https://digital.asahi.com/articles/DA123.html')
@@ -130,6 +145,11 @@ class TestTenseijingo_convert_url(unittest.TestCase):
         pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
         result = tenseijingo._tenseijingo__convert_url(url)
         self.assertRegex(result, pattern)
+
+    def test_convert_url_fail(self):
+        url = 'badurl'
+        with self.assertRaises(ValueError):
+            tenseijingo._tenseijingo__convert_url(url)
 
 
 class TestTenseijingo_check_url(unittest.TestCase):
