@@ -103,8 +103,6 @@ class tenseijingo:
         pattern = '^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
         return True if re.compile(pattern).search(url) else False
 
-
-class TenseijingoHandler:
     @staticmethod
     def making_html(content: dict):
         html = '<!DOCTYPE html> \

@@ -1,5 +1,5 @@
 import unittest
-from tenseijingo import tenseijingo, TenseijingoHandler as handler
+from tenseijingo import tenseijingo
 
 
 class ini:
@@ -179,14 +179,14 @@ class Test_Making_html(unittest.TestCase):
         cls.content_result = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_result_is_not_none(self):
-        result = handler.making_html(self.content_result)
+        result = tenseijingo.making_html(self.content_result)
         self.assertIsNotNone(result)
 
     def test_check_results_form(self):
         from bs4 import BeautifulSoup as bs
 
         # result should be formatted by Head(H1, H3) and body
-        result = handler.making_html(self.content_result)
+        result = tenseijingo.making_html(self.content_result)
         content = bs(result)
         head = content.find_all('head')
         body = content.find_all('body')
@@ -198,7 +198,7 @@ class Test_Making_html(unittest.TestCase):
         import re
         pattern = r"(?is)content=[\"'].*?;\s*charset=(.*?)[\"']"
         char_re = re.compile(pattern)
-        html_result = handler.making_html(self.content_result)
+        html_result = tenseijingo.making_html(self.content_result)
         chk_result = char_re.search(html_result)
         self.assertIsNotNone(chk_result)
         self.assertTrue('utf-8' in chk_result.group())

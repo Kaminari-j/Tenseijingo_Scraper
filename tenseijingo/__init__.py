@@ -1,3 +1,3 @@
-from .tenseijingo import tenseijingo, TenseijingoHandler
+from .tenseijingo import tenseijingo
 
 
