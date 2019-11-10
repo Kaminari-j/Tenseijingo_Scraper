@@ -1,5 +1,5 @@
 import unittest
-from tenseijingo import TenseijingoModule
+from modules import TenseijingoModule
 
 
 class ini:

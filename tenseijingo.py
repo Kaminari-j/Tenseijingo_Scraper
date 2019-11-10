@@ -1,4 +1,4 @@
-from tenseijingo import TenseijingoModule
+from modules import TenseijingoModule
 import os
 
 
