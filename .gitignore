@@ -119,3 +119,4 @@ ini/tele.ini
 ini/user.ini
 html
 test/test_html/
+.DS_Store
