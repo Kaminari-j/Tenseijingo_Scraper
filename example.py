@@ -1,4 +1,4 @@
-from tenseijingo import tenseijingo, ini, TenseijingoHandler as handler
+from tenseijingo import tenseijingo, TenseijingoHandler as handler
 import datetime
 import pdfkit
 import os
@@ -9,9 +9,11 @@ if __name__ == '__main__':
     if not os.path.exists(download_path):
         os.makedirs(download_path)
 
-    user = ini.User()
+    # Asahi login info
+    user_id = ''
+    user_password = ''
 
-    s = tenseijingo(user.id, user.password)
+    s = tenseijingo(user_id, user_password)
     try:
         s.__open_session()
 
