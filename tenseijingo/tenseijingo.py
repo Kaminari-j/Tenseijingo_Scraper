@@ -13,13 +13,6 @@ class tenseijingo:
         'login_id': None,
         'login_password': None
     }
-    __session = None
-    __login_url = 'https://digital.asahi.com/login/login.html'
-    __list_url = 'https://www.asahi.com/news/tenseijingo.html'
-
-    @property
-    def session(self):
-        return self.__session
 
     @property
     def id(self):
@@ -35,9 +28,10 @@ class tenseijingo:
         self.__LOGIN_INFO['login_id'] = id
         self.__LOGIN_INFO['login_password'] = password
 
-    def open(self):
+    def __open_session(self):
+        __login_url = 'https://digital.asahi.com/login/login.html'
         with requests.Session() as s:
-            login_req = s.post(self.__login_url, data=self.__LOGIN_INFO)
+            login_req = s.post(__login_url, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
                 raise ConnectionError('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
@@ -46,57 +40,111 @@ class tenseijingo:
             if len(login_result) > 0:
                 raise ConnectionError(str.strip(login_result[0].text))
             else:
-                self.__session = s
+                return s
+
+    def __get_contents_from_url(self, url: str):
+        if url:
+            with self.__open_session() as s:
+                # https://digital.asahi.com/articles/DA3S14049498.html
+                res = s.get(url)
+                if res.status_code != 200:
+                    raise ConnectionError
+                res.encoding = res.apparent_encoding
+                return bs(res.text, 'html.parser')
+        else:
+            raise ValueError
+
+    def __get_contents_from_urls(self, urls: list):
+        if urls:
+            with self.__open_session() as s:
+                results = list()
+                for url in urls:
+                    res = s.get(url)
+                    if res.status_code != 200:
+                        raise ConnectionError
+                    res.encoding = res.apparent_encoding
+                    results.append(bs(res.text, 'html.parser'))
+                return results
+        else:
+            raise ValueError
 
     def get_content(self, url):
-        # https://digital.asahi.com/articles/DA3S14049498.html
-        res = self.session.get(url)
-        if res.status_code != 200:
-            raise Exception('Connection Failed')
-        soup = bs(res.text, 'html.parser')
-        res.encoding = res.apparent_encoding
-
-        result = {'title': soup.findAll('h1')[0].text,
+        soup = self.__get_contents_from_url(url)
+        dic_result = {
+                  'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
                   'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
-        return result
+        return dic_result
 
     def get_list(self):
-        list_page = self.__list_url
-        res = self.__session.get(list_page)
-        if res.status_code != 200:
-            raise Exception('Connection Failed')
-        res.encoding = res.apparent_encoding
-        soup = bs(res.text, 'html.parser')
-        result = list()
-        for link in soup.findAll('div', attrs={'class', 'TabMod'})[0].findAll({'a', 'href'}):
-            attr = link.attrs['href']
-            if tenseijingo.check_url(attr):
-                result.append(tenseijingo.convert_url(attr))
-        return result if len(result) > 0 else None
+        __list_url = 'https://www.asahi.com/news/tenseijingo.html'
+        soup = self.__get_contents_from_url(__list_url)
+        panels = soup.findAll('div', attrs={'class', 'TabPanel'})
+        dic_article = dict()
+        for panel in panels:
+            list_items = panel.findAll('li')
+            for item in list_items:
+                _date = item['data-date']
+                _title = item.findAll('em')[0].text
+                _url = tenseijingo.__convert_url(item.findAll('a')[0]['href'])
+
+                dic_article[_date] = {'title': _title, 'url': _url}
+        return dic_article if len(dic_article) > 0 else None
 
     @staticmethod
-    def convert_url(url: str):
-        return 'https://digital.asahi.com' + url.split('?')[0]
+    def __convert_url(url: str):
+        if tenseijingo.__check_url(url):
+            return 'https://digital.asahi.com' + url.split('?')[0]
+        else:
+            raise ValueError
 
     @staticmethod
-    def check_url(url: str):
+    def __check_url(url: str):
         pattern = '^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
         return True if re.compile(pattern).search(url) else False
 
-    # requests.Session
-    def close(self):
-        if self.__session:
-            self.__session.close()
-            # Todo: Is it work?
-            self.__session = None
+
+class TenseijingoHandler():
+    @staticmethod
+    def making_html(content: dict):
+        html = '<!DOCTYPE html> \
+                    <html>\
+                        <head>\
+                            <h1>' + content['title'] + '</h1> \
+                            <h3 align="right">' + str(content['datetime']) + '</h3>\
+                        </head>\
+                        <body> \
+                            <p>' + content['content'] + '</p> \
+                        </body>\
+                    </html>'
+        return html
+
+    @staticmethod
+    def convert_to_pdf(html):
+        import os
+        import pdfkit
+
+        html_base = os.path.splitext(html)[0]
+        pdf_out = html_base + '.pdf'
+
+        options = {
+            'page-size': 'A4',
+            'margin-top': '0.1in',
+            'margin-right': '0.1in',
+            'margin-bottom': '0.1in',
+            'margin-left': '0.1in',
+            'encoding': "shift_jis",
+            'no-outline': None
+        }
+
+        pdfkit.from_file(html, pdf_out, options=options)
+        return pdf_out
 
 
 if __name__ == '__main__':
     user = ini.User()
     s = tenseijingo(user.id, user.password)
-    s.open()
-    result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
+    result = s.get_list()
+    #result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
-    print(result)

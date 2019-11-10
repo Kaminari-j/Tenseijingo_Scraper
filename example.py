@@ -1,5 +1,4 @@
-from tenseijingo import tenseijingo, ini
-from tenseijingo.TenseijingoHandler import handler
+from tenseijingo import tenseijingo, ini, TenseijingoHandler as handler
 import datetime
 import pdfkit
 import os
@@ -14,7 +13,7 @@ if __name__ == '__main__':
 
     s = tenseijingo(user.id, user.password)
     try:
-        s.open()
+        s.__open_session()
 
         article_list = s.get_list()
         for article in article_list[0:]:
@@ -31,4 +30,4 @@ if __name__ == '__main__':
                 handler.convert_to_pdf(html_name)
     except ConnectionError as e:
         print(e)
-    s.close()
+    s.__close_session()

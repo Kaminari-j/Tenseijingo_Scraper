@@ -1,5 +1,4 @@
-from .tenseijingo import tenseijingo
+from .tenseijingo import tenseijingo, TenseijingoHandler
 from .ini import *
-from .TenseijingoHandler import handler
 
 
