@@ -146,29 +146,18 @@ class TestTenseijingo_get_backnumber_list(unittest.TestCase):
                     self.assertRegex(value, url_pattern)
 
 
-class TestTenseijingo_convert_url(unittest.TestCase):
-    def test_convert_url(self):
-        url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
-        pattern = '^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
-        result = TenseijingoModule.convert_url(url)
+class TestTenseijingo_get_individual_url_from_backnumber_url(unittest.TestCase):
+    good_url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
+    bad_url = 'javascript:void(0)'
+
+    def test_when_url_ok(self):
+        pattern = r'^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
+        result = TenseijingoModule.get_individual_url_from_backnumber_url(self.good_url)
         self.assertRegex(result, pattern)
 
-    def test_convert_url_fail(self):
-        url = 'badurl'
+    def test_when_url_ng(self):
         with self.assertRaises(ValueError):
-            TenseijingoModule.convert_url(url)
-
-
-class TestTenseijingo_check_url(unittest.TestCase):
-    def test_1_when_correct(self):
-        url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
-        result = TenseijingoModule.check_url(url)
-        self.assertTrue(result)
-
-    def test_2_when_incorrect(self):
-        url = 'javascript:void(0)'
-        result = TenseijingoModule.check_url(url)
-        self.assertFalse(result)
+            TenseijingoModule.get_individual_url_from_backnumber_url(self.bad_url)
 
 
 class Test_Making_html(unittest.TestCase):

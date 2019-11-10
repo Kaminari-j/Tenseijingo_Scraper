@@ -2,7 +2,8 @@ from tenseijingo import TenseijingoModule
 import os
 
 
-if __name__ == '__main__':
+def get_html_with_date(dateFrom: str, dateTo: str):
+    # Todo : Convert this method to module and make available query by date from to
     download_path = r'./html'
     if not os.path.exists(download_path):
         os.makedirs(download_path)
@@ -16,7 +17,6 @@ if __name__ == '__main__':
         s.open_session()
 
         article_list = s.get_backnumber_list()
-        # Todo : Convert this method to module and make available query by date from to
         for upload_date, content_dic in article_list.items():
             content = s.convert_content_bs_to_dict(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")
@@ -30,3 +30,7 @@ if __name__ == '__main__':
                     f.close()
     except ConnectionError as e:
         print(e)
+
+
+if __name__ == '__main__':
+    get_html_with_date('20191001', '20191003')

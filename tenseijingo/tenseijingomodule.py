@@ -100,22 +100,18 @@ class TenseijingoModule:
             for item in list_items:
                 _date = item['data-date']
                 _title = item.findAll('em')[0].text
-                _url = TenseijingoModule.convert_url(item.findAll('a')[0]['href'])
+                _url = TenseijingoModule.get_individual_url_from_backnumber_url(item.findAll('a')[0]['href'])
 
                 dic_article[_date] = {'title': _title, 'url': _url}
         return dic_article if len(dic_article) > 0 else None
 
     @staticmethod
-    def convert_url(url: str):
-        if TenseijingoModule.check_url(url):
+    def get_individual_url_from_backnumber_url(url: str):
+        pattern = r'^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
+        if re.compile(pattern).search(url):
             return 'https://digital.asahi.com' + url.split('?')[0]
         else:
-            raise ValueError
-
-    @staticmethod
-    def check_url(url: str):
-        pattern = '^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
-        return True if re.compile(pattern).search(url) else False
+            raise ValueError('Invalid URL')
 
     @staticmethod
     def making_html(content: dict):
