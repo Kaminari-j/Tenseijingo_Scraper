@@ -16,6 +16,7 @@ if __name__ == '__main__':
         s.open_session()
 
         article_list = s.get_backnumber_list()
+        # Todo : Convert this method to module and make available query by date from to
         for upload_date, content_dic in article_list.items():
             content = s.convert_content_bs_to_dict(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")

@@ -12,6 +12,9 @@ class TenseijingoModule:
         'login_password': None
     }
 
+    __URL_LogIn = 'https://digital.asahi.com/login/login.html'
+    __URL_BacknumberList = 'https://www.asahi.com/news/tenseijingo.html'
+
     @property
     def id(self):
         return self.__LOGIN_INFO['login_id']
@@ -27,9 +30,8 @@ class TenseijingoModule:
         self.__LOGIN_INFO['login_password'] = password
 
     def open_session(self):
-        __login_url = 'https://digital.asahi.com/login/login.html'
         with requests.Session() as s:
-            login_req = s.post(__login_url, data=self.__LOGIN_INFO)
+            login_req = s.post(self.__URL_LogIn, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
                 raise ConnectionError('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
@@ -90,8 +92,7 @@ class TenseijingoModule:
         return dic_result
 
     def get_backnumber_list(self):
-        __list_url = 'https://www.asahi.com/news/tenseijingo.html'
-        soup = self.get_contents_from_url(__list_url)
+        soup = self.get_contents_from_url(self.__URL_BacknumberList)
         panels = soup.findAll('div', attrs={'class', 'TabPanel'})
         dic_article = dict()
         for panel in panels:
