@@ -104,7 +104,7 @@ class tenseijingo:
         return True if re.compile(pattern).search(url) else False
 
 
-class TenseijingoHandler():
+class TenseijingoHandler:
     @staticmethod
     def making_html(content: dict):
         html = '<!DOCTYPE html> \
