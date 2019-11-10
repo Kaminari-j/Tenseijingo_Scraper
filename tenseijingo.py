@@ -9,15 +9,29 @@ def get_html_with_date(dateFrom: str, dateTo: str):
         os.makedirs(download_path)
 
     # https://digital.asahi.com User Id and Password
-    user_id = ''
-    user_password = ''
+    user_id = 'rodney.joo@gmail.com'
+    user_password = 'CBMjELnZjvw7h'
 
     s = TenseijingoModule(user_id, user_password)
     try:
         s.open_session()
 
         article_list = s.get_backnumber_list()
-        for upload_date, content_dic in article_list.items():
+
+        dt_list = [dt for dt in article_list.keys()]
+        dt_list.sort()
+        idx_from = dt_list.index(dateFrom)
+        idx_to = dt_list.index(dateTo) + 1
+
+        # Todo:
+        #   if there no from date or to date
+        #       how to handle does dates which are inside range
+        #       ex) dateFrom = '20191001', dateTo = '20191010'
+        #           dt_list = ['20191005', '20191006', '20191007']
+
+        for upload_date in dt_list[idx_from:idx_to]:
+            print(upload_date)
+            content_dic = article_list[upload_date]
             content = s.convert_content_bs_to_dict(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")
 
