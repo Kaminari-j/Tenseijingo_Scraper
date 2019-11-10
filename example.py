@@ -1,4 +1,4 @@
-from tenseijingo import tenseijingo
+from tenseijingo import TenseijingoModule
 import os
 
 
@@ -11,7 +11,7 @@ if __name__ == '__main__':
     user_id = ''
     user_password = ''
 
-    s = tenseijingo(user_id, user_password)
+    s = TenseijingoModule(user_id, user_password)
     try:
         s.open_session()
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
             html_name = download_path + '/' + content_date + '.html'
             if not os.path.exists(html_name):
                 print('Downloading.. ' + html_name.split('/')[-1])
-                html = tenseijingo.making_html(content)
+                html = TenseijingoModule.making_html(content)
                 with open(html_name, 'w') as f:
                     f.write(html)
                     f.close()
