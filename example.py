@@ -1,6 +1,4 @@
 from tenseijingo import tenseijingo, TenseijingoHandler as handler
-import datetime
-import pdfkit
 import os
 
 
@@ -9,17 +7,17 @@ if __name__ == '__main__':
     if not os.path.exists(download_path):
         os.makedirs(download_path)
 
-    # Asahi login info
+    # https://digital.asahi.com User Id and Password
     user_id = ''
     user_password = ''
 
     s = tenseijingo(user_id, user_password)
     try:
-        s.__open_session()
+        s.open_session()
 
         article_list = s.get_list()
-        for article in article_list[0:]:
-            content = s.get_content(article)
+        for upload_date, content_dic in article_list.items():
+            content = s.get_content(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")
 
             html_name = download_path + '/' + content_date + '.html'
@@ -29,7 +27,5 @@ if __name__ == '__main__':
                 with open(html_name, 'w') as f:
                     f.write(html)
                     f.close()
-                handler.convert_to_pdf(html_name)
     except ConnectionError as e:
         print(e)
-    s.__close_session()
