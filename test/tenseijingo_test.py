@@ -1,6 +1,12 @@
 import unittest
-from tenseijingo import tenseijingo, ini, TenseijingoHandler as handler
+from tenseijingo import tenseijingo, TenseijingoHandler as handler
 import re
+
+
+class ini:
+    class User:
+        id = ''
+        password = ''
 
 
 class TestTenseijingo_Init(unittest.TestCase):
