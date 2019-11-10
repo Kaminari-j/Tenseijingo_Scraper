@@ -122,13 +122,13 @@ class tenseijingo:
                     <html>\
                         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> \
                         <head>\
-                            <h1>' + content['title'] + '</h1> \
-                            <h3 align="right">' + str(content['datetime']) + '</h3>\
+                            <h1>{0}</h1> \
+                            <h3 align="right">{1}</h3>\
                         </head>\
                         <body> \
-                            <p>' + content['content'] + '</p> \
+                            <p>{2}</p> \
                         </body>\
-                    </html>'
+                    </html>'.format(content['title'], str(content['datetime']), content['content'])
         return html
 
 
