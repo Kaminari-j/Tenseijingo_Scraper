@@ -76,12 +76,12 @@ class TestTenseijingo_Get_Contents_From_Urls(unittest.TestCase):
             self.obj.get_contents_from_urls([''])
 
 
-class TestTenseijingo_get_content(unittest.TestCase):
+class TestTenseijingo_convert_content_to_dict(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.result_ok = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
+        cls.result_ok = cls.obj.convert_content_to_dict('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_1_result_should_be_not_none(self):
         self.assertIsNotNone(self.result_ok)
@@ -96,7 +96,7 @@ class TestTenseijingo_get_content(unittest.TestCase):
 
     def test_4_should_raise_when_failed_to_load(self):
         with self.assertRaises(Exception):
-            self.obj.get_content('https://digital.asahi.com/articles/DA3S14098.html')
+            self.obj.convert_content_to_dict('https://digital.asahi.com/articles/DA3S14098.html')
 
     def test_5_check_type(self):
         elements = ('title', 'content')
@@ -176,7 +176,7 @@ class Test_Making_html(unittest.TestCase):
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.content_result = cls.obj.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
+        cls.content_result = cls.obj.convert_content_to_dict('https://digital.asahi.com/articles/DA3S14049498.html')
 
     def test_result_is_not_none(self):
         result = tenseijingo.making_html(self.content_result)

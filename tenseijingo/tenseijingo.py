@@ -42,9 +42,15 @@ class tenseijingo:
                 return s
 
     def get_contents_from_url(self, url: str):
+        """
+        URLから天声人語コンテンツを取得する
+        :param url: str
+            コンテンツ取得対象のURL
+        :return: BeautifulSoup
+            コンテンツ
+        """
         if url:
             with self.open_session() as s:
-                # https://digital.asahi.com/articles/DA3S14049498.html
                 res = s.get(url)
                 if res.status_code != 200:
                     raise ConnectionError
@@ -54,6 +60,13 @@ class tenseijingo:
             raise ValueError
 
     def get_contents_from_urls(self, urls: list):
+        """
+        (deprecated) URLのリストから天声人語コンテンツを取得する
+        :param urls: list
+            コンテンツ取得対象のURL
+        :return: list[BeautifulSoup]
+            コンテンツ
+        """
         if urls:
             with self.open_session() as s:
                 results = list()
@@ -67,7 +80,7 @@ class tenseijingo:
         else:
             raise ValueError
 
-    def get_content(self, url):
+    def convert_content_to_dict(self, url):
         soup = self.get_contents_from_url(url)
         dic_result = {
                   'title': soup.findAll('h1')[0].text,

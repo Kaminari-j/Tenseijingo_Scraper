@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
         article_list = s.get_list()
         for upload_date, content_dic in article_list.items():
-            content = s.get_content(content_dic['url'])
+            content = s.convert_content_to_dict(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")
 
             html_name = download_path + '/' + content_date + '.html'
