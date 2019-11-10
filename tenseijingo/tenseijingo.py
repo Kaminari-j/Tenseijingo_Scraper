@@ -79,7 +79,7 @@ class tenseijingo:
         else:
             raise ValueError
 
-    def convert_content_to_dict(self, url):
+    def convert_content_bs_to_dict(self, url):
         from datetime import datetime
         soup = self.get_contents_from_url(url)
         dic_result = {
