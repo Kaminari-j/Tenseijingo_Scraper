@@ -15,7 +15,7 @@ if __name__ == '__main__':
     try:
         s.open_session()
 
-        article_list = s.get_list()
+        article_list = s.get_backnumber_list()
         for upload_date, content_dic in article_list.items():
             content = s.convert_content_to_dict(content_dic['url'])
             content_date = content['datetime'].strftime("%Y%m%d")

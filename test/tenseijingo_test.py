@@ -105,14 +105,14 @@ class TestTenseijingo_convert_content_to_dict(unittest.TestCase):
         self.assertEqual(type('datetime'), str)
 
 
-class TestTenseijingo_get_list(unittest.TestCase):
+class TestTenseijingo_get_backnumber_list(unittest.TestCase):
     obj = None
 
     @classmethod
     def setUpClass(cls):
         cls.user = ini.User()
         cls.obj = tenseijingo(cls.user.id, cls.user.password)
-        cls.result = cls.obj.get_list()
+        cls.result = cls.obj.get_backnumber_list()
 
     def test_1_result_is_not_none(self):
         self.assertIsNotNone(self.result)

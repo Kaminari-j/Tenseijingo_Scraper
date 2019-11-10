@@ -2,7 +2,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re
-import datetime
 
 
 class tenseijingo:
@@ -81,15 +80,16 @@ class tenseijingo:
             raise ValueError
 
     def convert_content_to_dict(self, url):
+        from datetime import datetime
         soup = self.get_contents_from_url(url)
         dic_result = {
                   'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-                  'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
+                  'datetime': datetime.strptime(soup.findAll('time', attrs={'class', 'LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
         return dic_result
 
-    def get_list(self):
+    def get_backnumber_list(self):
         __list_url = 'https://www.asahi.com/news/tenseijingo.html'
         soup = self.get_contents_from_url(__list_url)
         panels = soup.findAll('div', attrs={'class', 'TabPanel'})
@@ -136,6 +136,6 @@ if __name__ == '__main__':
     user_id = ''
     user_password = ''
     s = tenseijingo(user_id, user_password)
-    result = s.get_list()
+    result = s.get_backnumber_list()
     #result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
