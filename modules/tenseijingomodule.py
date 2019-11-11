@@ -2,16 +2,18 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re
-import datetime
 
 
-class tenseijingo:
+class TenseijingoModule:
     __LOGIN_INFO = {
         'jumpUrl': 'https://www.asahi.com/?',
         'ref': None,
         'login_id': None,
         'login_password': None
     }
+
+    __URL_LogIn = 'https://digital.asahi.com/login/login.html'
+    __URL_BacknumberList = 'https://www.asahi.com/news/tenseijingo.html'
 
     @property
     def id(self):
@@ -28,9 +30,8 @@ class tenseijingo:
         self.__LOGIN_INFO['login_password'] = password
 
     def open_session(self):
-        __login_url = 'https://digital.asahi.com/login/login.html'
         with requests.Session() as s:
-            login_req = s.post(__login_url, data=self.__LOGIN_INFO)
+            login_req = s.post(self.__URL_LogIn, data=self.__LOGIN_INFO)
             if login_req.status_code != 200:
                 raise ConnectionError('Connection Failed')
             login_req.encoding = login_req.apparent_encoding
@@ -42,9 +43,15 @@ class tenseijingo:
                 return s
 
     def get_contents_from_url(self, url: str):
+        """
+        URLから天声人語コンテンツを取得する
+        :param url: str
+            コンテンツ取得対象のURL
+        :return: BeautifulSoup
+            コンテンツ
+        """
         if url:
             with self.open_session() as s:
-                # https://digital.asahi.com/articles/DA3S14049498.html
                 res = s.get(url)
                 if res.status_code != 200:
                     raise ConnectionError
@@ -54,6 +61,13 @@ class tenseijingo:
             raise ValueError
 
     def get_contents_from_urls(self, urls: list):
+        """
+        (deprecated) URLのリストから天声人語コンテンツを取得する
+        :param urls: list
+            コンテンツ取得対象のURL
+        :return: list[BeautifulSoup]
+            コンテンツ
+        """
         if urls:
             with self.open_session() as s:
                 results = list()
@@ -67,18 +81,18 @@ class tenseijingo:
         else:
             raise ValueError
 
-    def get_content(self, url):
+    def convert_content_bs_to_dict(self, url):
+        from datetime import datetime
         soup = self.get_contents_from_url(url)
         dic_result = {
                   'title': soup.findAll('h1')[0].text,
                   'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-                  'datetime': datetime.datetime.strptime(soup.findAll('time', attrs={'class','LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
+                  'datetime': datetime.strptime(soup.findAll('time', attrs={'class', 'LastUpdated'})[0].attrs['datetime'], "%Y-%m-%dT%H:%M")
                   }
         return dic_result
 
-    def get_list(self):
-        __list_url = 'https://www.asahi.com/news/tenseijingo.html'
-        soup = self.get_contents_from_url(__list_url)
+    def get_backnumber_list(self):
+        soup = self.get_contents_from_url(self.__URL_BacknumberList)
         panels = soup.findAll('div', attrs={'class', 'TabPanel'})
         dic_article = dict()
         for panel in panels:
@@ -86,45 +100,39 @@ class tenseijingo:
             for item in list_items:
                 _date = item['data-date']
                 _title = item.findAll('em')[0].text
-                _url = tenseijingo.convert_url(item.findAll('a')[0]['href'])
+                _url = TenseijingoModule.get_individual_url_from_backnumber_url(item.findAll('a')[0]['href'])
 
                 dic_article[_date] = {'title': _title, 'url': _url}
         return dic_article if len(dic_article) > 0 else None
 
     @staticmethod
-    def convert_url(url: str):
-        if tenseijingo.check_url(url):
+    def get_individual_url_from_backnumber_url(url: str):
+        pattern = r'^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
+        if re.compile(pattern).search(url):
             return 'https://digital.asahi.com' + url.split('?')[0]
         else:
-            raise ValueError
+            raise ValueError('Invalid URL')
 
-    @staticmethod
-    def check_url(url: str):
-        pattern = '^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
-        return True if re.compile(pattern).search(url) else False
-
-
-class TenseijingoHandler():
     @staticmethod
     def making_html(content: dict):
         html = '<!DOCTYPE html> \
                     <html>\
                         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> \
                         <head>\
-                            <h1>' + content['title'] + '</h1> \
-                            <h3 align="right">' + str(content['datetime']) + '</h3>\
+                            <h1>{0}</h1> \
+                            <h3 align="right">{1}</h3>\
                         </head>\
                         <body> \
-                            <p>' + content['content'] + '</p> \
+                            <p>{2}</p> \
                         </body>\
-                    </html>'
+                    </html>'.format(content['title'], str(content['datetime']), content['content'])
         return html
 
 
 if __name__ == '__main__':
     user_id = ''
     user_password = ''
-    s = tenseijingo(user_id, user_password)
-    result = s.get_list()
+    s = TenseijingoModule(user_id, user_password)
+    result = s.get_backnumber_list()
     #result = s.get_content('https://digital.asahi.com/articles/DA3S14049498.html')
 
