@@ -1,5 +1,7 @@
-from modules import TenseijingoModule
 import os
+from modules import TenseijingoModule
+import userinfo
+
 
 
 def get_html_with_date(date_from: str, date_to: str):
@@ -9,8 +11,8 @@ def get_html_with_date(date_from: str, date_to: str):
         os.makedirs(download_path)
 
     # https://digital.asahi.com User Id and Password
-    user_id = ''
-    user_password = ''
+    user_id = userinfo.id
+    user_password = userinfo.password
 
     s = TenseijingoModule(user_id, user_password)
     try:
