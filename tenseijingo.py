@@ -2,15 +2,15 @@ from modules import TenseijingoModule
 import os
 
 
-def get_html_with_date(dateFrom: str, dateTo: str):
+def get_html_with_date(date_from: str, date_to: str):
     # Todo : Convert this method to module and make available query by date from to
     download_path = r'./html'
     if not os.path.exists(download_path):
         os.makedirs(download_path)
 
     # https://digital.asahi.com User Id and Password
-    user_id = 'rodney.joo@gmail.com'
-    user_password = 'CBMjELnZjvw7h'
+    user_id = ''
+    user_password = ''
 
     s = TenseijingoModule(user_id, user_password)
     try:
@@ -20,8 +20,8 @@ def get_html_with_date(dateFrom: str, dateTo: str):
 
         dt_list = [dt for dt in article_list.keys()]
         dt_list.sort()
-        idx_from = dt_list.index(dateFrom)
-        idx_to = dt_list.index(dateTo) + 1
+        idx_from = dt_list.index(date_from)
+        idx_to = dt_list.index(date_to) + 1
 
         # Todo:
         #   if there no from date or to date
