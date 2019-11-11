@@ -120,3 +120,4 @@ ini/user.ini
 html
 test/test_html/
 .DS_Store
+userinfo.py
