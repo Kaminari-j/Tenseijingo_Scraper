@@ -131,9 +131,10 @@ class TenseijingoModule:
         return html
 
 
-def get_html_with_date(date_from: str, date_to: str):
+def get_html_with_date(date_from: str, date_to: str, download_path=None):
     # Todo : Convert this method to module and make available query by date from to
-    download_path = r'./html'
+    if download_path is None:
+        download_path = r'./html'
     if not os.path.exists(download_path):
         os.makedirs(download_path)
 
