@@ -1,3 +1,0 @@
-from .tenseijingomodule import TenseijingoModule
-
-
