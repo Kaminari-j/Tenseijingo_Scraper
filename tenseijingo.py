@@ -17,20 +17,21 @@ def get_html_with_date(date_from: str, date_to: str):
     try:
         s.open_session()
 
+        # Get list of content
         article_list = s.get_backnumber_list()
 
-        dt_list = [dt for dt in article_list.keys()]
-        dt_list.sort()
-        idx_from = dt_list.index(date_from)
-        idx_to = dt_list.index(date_to) + 1
+        list_of_dates = [dt for dt in article_list.keys()]
+        list_of_dates.sort()
+        idx_from = list_of_dates.index(date_from)
+        idx_to = list_of_dates.index(date_to) + 1
 
         # Todo:
         #   if there no from date or to date
         #       how to handle does dates which are inside range
         #       ex) dateFrom = '20191001', dateTo = '20191010'
-        #           dt_list = ['20191005', '20191006', '20191007']
+        #           list_of_dates = ['20191005', '20191006', '20191007']
 
-        for content_date in dt_list[idx_from:idx_to]:
+        for content_date in list_of_dates[idx_from:idx_to]:
             print(content_date, end=': ')
             html_name = download_path + '/' + content_date + '.html'
             if not os.path.exists(html_name):
