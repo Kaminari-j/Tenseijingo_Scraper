@@ -147,18 +147,18 @@ class Test_get_backnumber_list(unittest.TestCase):
                     self.assertRegex(value, url_pattern)
 
 
-class Test_get_individual_url_from_backnumber_url(unittest.TestCase):
+class Test_convert_url(unittest.TestCase):
     good_url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
     bad_url = 'javascript:void(0)'
 
     def test_when_url_ok(self):
         pattern = r'^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
-        result = TenseijingoModule.get_individual_url_from_backnumber_url(self.good_url)
+        result = TenseijingoModule.convert_url(self.good_url)
         self.assertRegex(result, pattern)
 
     def test_when_url_ng(self):
         with self.assertRaises(ValueError):
-            TenseijingoModule.get_individual_url_from_backnumber_url(self.bad_url)
+            TenseijingoModule.convert_url(self.bad_url)
 
 
 class Test_Making_html(unittest.TestCase):

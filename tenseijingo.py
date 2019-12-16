@@ -102,13 +102,20 @@ class TenseijingoModule:
             for item in list_items:
                 _date = item['data-date']
                 _title = item.findAll('em')[0].text
-                _url = TenseijingoModule.get_individual_url_from_backnumber_url(item.findAll('a')[0]['href'])
+                _url = TenseijingoModule.convert_url(item.findAll('a')[0]['href'])
 
                 dic_article[_date] = {'title': _title, 'url': _url}
         return dic_article if len(dic_article) > 0 else None
 
     @staticmethod
-    def get_individual_url_from_backnumber_url(url: str):
+    def convert_url(url: str):
+        """
+        convert url(backnumber) to individual content url
+        :param url: url from backnumber
+        :type url: str
+        :return: url of individual content
+        :rtype: url
+        """
         pattern = r'^/articles/(\d|\D)+\.html\?iref\=tenseijingo_backnumber$'
         if re.compile(pattern).search(url):
             return 'https://digital.asahi.com' + url.split('?')[0]
