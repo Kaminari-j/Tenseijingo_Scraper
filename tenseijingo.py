@@ -26,8 +26,6 @@ class TenseijingoModule:
         return self.__LOGIN_INFO['login_password']
 
     def __init__(self, id, password):
-        if id is None or password is None:
-            raise ValueError("ID or Password shouldn't be None")
         self.__LOGIN_INFO['login_id'] = id
         self.__LOGIN_INFO['login_password'] = password
 
