@@ -17,8 +17,8 @@ class TestTenseijingoDate(unittest.TestCase):
         self.assertEqual(TenseijingoDate.get_date_n_days_ago('20191003', 2), '20191001')
 
     def test_rearrange_date_arguments(self):
-        datefrom, dateto = TenseijingoDate.rearrange_date_arguments('20190101', '20181231')
-        self.assertTrue(datefrom < dateto)
+        date_from, date_to = TenseijingoDate.rearrange_date_arguments('20190101', '20181231')
+        self.assertTrue(date_from < date_to)
 
     def test_get_substantive_start_date(self):
         dl = ['20191001', '20191002', '20191003']
