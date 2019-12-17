@@ -1,7 +1,8 @@
 import unittest
 from bs4 import BeautifulSoup as bs
 import re
-from tenseijingo import TenseijingoModule
+import tenseijingo
+from tenseijingo import TenseijingoModule, TenseijingoDate
 import userinfo
 
 
@@ -9,6 +10,37 @@ class ini:
     class User:
         id = userinfo.id
         password = userinfo.password
+
+
+class TestTenseijingoDate(unittest.TestCase):
+    def test_get_date_n_days_ago(self):
+        self.assertEqual(TenseijingoDate.get_date_n_days_ago('20191003', 2), '20191001')
+
+    def test_rearrange_date_arguments(self):
+        datefrom, dateto = TenseijingoDate.rearrange_date_arguments('20190101', '20181231')
+        self.assertTrue(datefrom < dateto)
+
+    def test_get_substantive_start_date(self):
+        dl = ['20191001', '20191002', '20191003']
+        self.assertEqual(TenseijingoDate.get_substantive_start_date('20190311', dl), '20191001')
+
+    def test_get_substantive_end_date(self):
+        dl = ['20191001', '20191002', '20191003']
+        self.assertEqual(TenseijingoDate.get_substantive_end_date('20190311', dl), '20191003')
+
+
+class TestTenseijingo(unittest.TestCase):
+    @unittest.skip
+    def test_get_html_with_date(self):
+        from datetime import datetime as dt
+        from os import listdir
+        from os.path import isfile, join
+        dtfrom = '20191215'
+        dtto = '20190101'
+        download_path = r'./html'
+        tenseijingo.get_html_with_date(dtfrom, dtto, download_path)
+        date_strings = ['{0}.{1}'.format(d.strftime('%Y%m%d'), 'html') for d in [dt.strptime('20190101', '%Y%m%d'), dt.strptime('20191215', '%Y%m%d')]]
+        files_only = [f for f in listdir(download_path) if isfile(join(download_path, f))]
 
 
 class TestTenseijingoModule(unittest.TestCase):

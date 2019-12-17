@@ -136,8 +136,41 @@ class TenseijingoModule:
         return html
 
 
-def get_html_with_date(date_from: str, date_to: str, download_path=None):
-    # Todo : Convert this method to module and make available query by date from to
+class TenseijingoDate:
+    date_from = None
+    date_to = None
+
+    def __init__(self, date_list: list, date1: str, date2=None):
+        if date2 is None:
+            date2 = TenseijingoDate.get_date_n_days_ago(date1, 90)
+        self.date_from, self.date_to = TenseijingoDate.rearrange_date_arguments(date1, date2)
+        self.date_from = TenseijingoDate.get_substantive_start_date(self.date_from, date_list)
+        self.date_to = TenseijingoDate.get_substantive_end_date(self.date_to, date_list)
+
+    @staticmethod
+    def get_date_n_days_ago(argdate: str, n: int):
+        """
+        :param argdate: a reference date string
+        :param n: days apart from argdate
+        :return: a date which argdate - n
+        """
+        from datetime import timedelta, datetime as dt
+        return (dt.strptime(argdate, '%Y%m%d') - timedelta(days=n)).strftime('%Y%m%d')
+
+    @staticmethod
+    def rearrange_date_arguments(datefrom: str, dateto: str):
+        return (datefrom, dateto) if datefrom <= dateto else (dateto, datefrom)
+
+    @staticmethod
+    def get_substantive_start_date(datestr: str, datelist: list):
+        return min(datelist) if datestr not in datelist else datestr
+
+    @staticmethod
+    def get_substantive_end_date(datestr: str, datelist: list):
+        return max(datelist) if datestr not in datelist else datestr
+
+
+def get_html_with_date(date1: str, date2=None, download_path=None):
     if download_path is None:
         download_path = r'./html'
     if not os.path.exists(download_path):
@@ -153,17 +186,12 @@ def get_html_with_date(date_from: str, date_to: str, download_path=None):
 
         # Get list of content
         article_list = s.get_backnumber_list()
-
         list_of_dates = [dt for dt in article_list.keys()]
         list_of_dates.sort()
-        idx_from = list_of_dates.index(date_from)
-        idx_to = list_of_dates.index(date_to) + 1
-
-        # Todo:
-        #   if there no from date or to date
-        #       how to handle does dates which are inside range
-        #       ex) dateFrom = '20191001', dateTo = '20191010'
-        #           list_of_dates = ['20191005', '20191006', '20191007']
+        t_date = TenseijingoDate(list_of_dates, date1, date2)
+        
+        idx_from = list_of_dates.index(t_date.date_from)
+        idx_to = list_of_dates.index(t_date.date_to) + 1
 
         for content_date in list_of_dates[idx_from:idx_to]:
             print(content_date, end=': ')
@@ -185,4 +213,4 @@ def get_html_with_date(date_from: str, date_to: str, download_path=None):
 
 if __name__ == '__main__':
     from datetime import date
-    get_html_with_date('20191001', date.today().strftime('%Y%m%d'))
+    get_html_with_date(date.today().strftime('%Y%m%d'), '20190101')
