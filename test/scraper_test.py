@@ -11,6 +11,7 @@ class TestAsahiShinbunScraper(unittest.TestCase):
         cls.user_pw = userinfo.password
         cls.obj = AsahiShinbunScraper(cls.user_id, cls.user_pw)
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
+        cls.test_url2 = 'https://digital.asahi.com/articles/DA3S14295448.html'
 
     def test_init(self):
         self.assertEqual(self.obj.id, self.user_id)
@@ -28,20 +29,24 @@ class TestAsahiShinbunScraper(unittest.TestCase):
         )
 
     def test_get_contents_from_urls(self):
-        results = self.obj.get_contents_from_urls([self.test_url])
+        results = self.obj.get_contents_from_urls([['20191201', self.test_url], ['20191202', self.test_url2]])
         self.assertIsInstance(results, list)
-        for res in results:
-            self.assertIsInstance(res, bs)
+        for res1, res2 in results:
+            self.assertIsInstance(res1, str)
+            self.assertRegex(res1, '^20\d\d[0-1]{1}\d[0-3]\d$')
+            self.assertIsInstance(res2, bs)
 
     def test_convert_content_bs_to_dict(self):
-        result_ok = self.obj.convert_content_bs_to_dict(self.test_url)
-        # result_should_be_instance_of_dict
-        self.assertIsInstance(result_ok, dict)
-        # check element's type
-        import datetime
-        self.assertIsInstance(result_ok['title'], str)
-        self.assertIsInstance(result_ok['content'], str)
-        self.assertIsInstance(result_ok['datetime'], datetime.datetime)
+        results = self.obj.get_contents_from_urls([['20191201', self.test_url], ['20191202', self.test_url2]])
+        for date, result in results:
+            convert_result = AsahiShinbunScraper.convert_content_bs_to_dict(result)
+            # result_should_be_instance_of_dict
+            self.assertIsInstance(convert_result, dict)
+            # check element's type
+            import datetime
+            self.assertIsInstance(convert_result['title'], str)
+            self.assertIsInstance(convert_result['content'], str)
+            self.assertIsInstance(convert_result['datetime'], datetime.datetime)
 
     def test_get_backnumber_list(self):
         result = self.obj.get_backnumber_list()

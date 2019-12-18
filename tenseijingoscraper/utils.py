@@ -36,3 +36,7 @@ class DateHandling:
     @staticmethod
     def convert_to_date_object(date_of_content: str):
         return dt.strptime(date_of_content, "%Y-%m-%dT%H:%M")
+
+
+def html_file_name(path: str, date: str):
+    return '{0}/{1}.html'.format(path, date)
