@@ -19,7 +19,8 @@ class TestAsahishinbun(unittest.TestCase):
         self.assertRegex(asahishinbun.convert_url(url), pattern)
 
     def test_making_html(self):
-        content_result = self.obj.convert_content_bs_to_dict(self.test_url)
+        results = self.obj.get_contents_from_url(self.test_url)
+        content_result = self.obj.convert_content_bs_to_dict(results)
         result = asahishinbun.convert_to_html(content_result)
         # result should be formatted by Head(H1, H3) and body
         content = bs(result, 'html.parser')

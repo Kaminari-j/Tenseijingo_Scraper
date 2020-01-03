@@ -51,36 +51,36 @@ class AsahiShinbunScraper:
         else:
             raise ValueError
 
-    def get_contents_from_urls(self, urls: list):
+    def get_contents_from_urls(self, download_list: list):
         """
         (deprecated) URLのリストから天声人語コンテンツを取得する
-        :param urls: list
-            コンテンツ取得対象のURL
-        :return: list[BeautifulSoup]
-            コンテンツ
+        :param download_list: list[str, str]
+            コンテンツの日付、URL
+        :return: list[str, BeautifulSoup]
+            コンテンツの日付、BeautifulSoup オブジェクト
         """
-        if urls:
+        if download_list:
             with self.open_session() as s:
                 results = list()
-                for url in urls:
+                for date, url in download_list:
+                    print('.', end='')
                     res = s.get(url)
                     if res.status_code != 200:
                         raise ConnectionError
                     res.encoding = res.apparent_encoding
-                    results.append(bs(res.text, 'html.parser'))
+                    results.append([date, bs(res.text, 'html.parser')])
+                print('')
                 return results
         else:
             raise ValueError
 
-    def convert_content_bs_to_dict(self, url):
-        from datetime import datetime
-        soup = self.get_contents_from_url(url)
-        dic_result = {
-              'title': soup.findAll('h1')[0].text,
-              'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-              'datetime': DateHandling.convert_to_date_object(soup.findAll('time', attrs={'class', 'LastUpdated'})[0].attrs['datetime'])
+    @staticmethod
+    def convert_content_bs_to_dict(obj: bs):
+        return {
+              'title': obj.findAll('h1')[0].text,
+              'content': obj.findAll('div', attrs={'class', 'ArticleText'})[0].text,
+              'datetime': DateHandling.convert_to_date_object(obj.findAll('time', attrs={'class', 'LastUpdated'})[0].attrs['datetime'])
               }
-        return dic_result
 
     def get_backnumber_list(self):
         soup = self.get_contents_from_url(asahishinbun.content_list_url)
