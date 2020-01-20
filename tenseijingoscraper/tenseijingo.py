@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from tenseijingoscraper import userinfo, asahishinbun
-from tenseijingoscraper.scraper import AsahiShinbunScraper
+from tenseijingoscraper import userinfo, asahishinbun, scraper
+from tenseijingoscraper.asahishinbun import AsahiSession
 from tenseijingoscraper.utils import DateHandling
 
 
@@ -15,12 +15,12 @@ def get_html_with_date(date1: str, date2=None, download_path=None):
     user_id = userinfo.id
     user_password = userinfo.password
 
-    s = AsahiShinbunScraper(user_id, user_password)
+    s = AsahiSession(user_id, user_password)
     try:
         s.open_session()
 
         # Get list of content
-        article_list = s.get_backnumber_list()
+        article_list = scraper.get_backnumber_list()
         list_of_dates = [dt for dt in article_list.keys()]
         list_of_dates.sort()
         t_date = DateHandling(list_of_dates, date1, date2)
@@ -33,7 +33,7 @@ def get_html_with_date(date1: str, date2=None, download_path=None):
             html_name = download_path + '/' + content_date + '.html'
             if not os.path.exists(html_name):
                 content_dic = article_list[content_date]
-                content = s.convert_content_bs_to_dict(content_dic['url'])
+                content = scraper.convert_content_bs_to_dict(content_dic['url'])
 
                 print('Downloading.. ' + html_name.split('/')[-1])
                 html = asahishinbun.convert_to_html(content)

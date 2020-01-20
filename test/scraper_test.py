@@ -1,40 +1,31 @@
 import unittest
 from bs4 import BeautifulSoup as bs
-from tenseijingoscraper import userinfo
-from tenseijingoscraper.scraper import AsahiShinbunScraper
+from tenseijingoscraper import userinfo, scraper
+from tenseijingoscraper.asahishinbun import AsahiSession
 
 
-class TestAsahiShinbunScraper(unittest.TestCase):
+class TestScraper(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.user_id = userinfo.id
         cls.user_pw = userinfo.password
-        cls.obj = AsahiShinbunScraper(cls.user_id, cls.user_pw)
+        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
-
-    def test_init(self):
-        self.assertEqual(self.obj.id, self.user_id)
-        self.assertEqual(self.obj.password, self.user_pw)
-
-    def test_open_session(self):
-        import requests
-        s = self.obj.open_session()
-        self.assertIsInstance(s, requests.Session)
 
     def test_get_contents_from_url(self):
         self.assertIsInstance(
-            self.obj.get_contents_from_url(self.test_url),
+            scraper.get_contents_from_url(self.test_url),
             bs
         )
 
     def test_get_contents_from_urls(self):
-        results = self.obj.get_contents_from_urls([self.test_url])
+        results = scraper.get_contents_from_urls([self.test_url])
         self.assertIsInstance(results, list)
         for res in results:
             self.assertIsInstance(res, bs)
 
     def test_convert_content_bs_to_dict(self):
-        result_ok = self.obj.convert_content_bs_to_dict(self.test_url)
+        result_ok = scraper.convert_content_bs_to_dict(self.test_url)
         # result_should_be_instance_of_dict
         self.assertIsInstance(result_ok, dict)
         # check element's type
@@ -44,7 +35,7 @@ class TestAsahiShinbunScraper(unittest.TestCase):
         self.assertIsInstance(result_ok['datetime'], datetime.datetime)
 
     def test_get_backnumber_list(self):
-        result = self.obj.get_backnumber_list()
+        result = scraper.get_backnumber_list()
         self.assertIsInstance(result, dict)
         # count_of_result
         self.assertTrue(1 <= len(result) <= 122)
