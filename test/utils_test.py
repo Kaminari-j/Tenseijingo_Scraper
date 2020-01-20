@@ -20,7 +20,7 @@ class TestDateHandling(unittest.TestCase):
 
     def test_convert_to_date_object(self):
         from datetime import datetime
-        self.assertIsInstance(DateHandling.convert_to_date_object('2019-10-03T03:11'), datetime)
+        self.assertIsInstance(DateHandling.convert_to_date_object('2019-10-03T03:11+09:00'), datetime)
 
 
 if __name__ == '__main__':
