@@ -51,7 +51,7 @@ def convert_content_bs_to_dict(url):
     dic_result = {
           'title': soup.findAll('h1')[0].text,
           'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
-          'datetime': DateHandling.convert_to_date_object(soup.findAll('time', attrs={'class', 'LastUpdated'})[0].attrs['datetime'])
+          'datetime': DateHandling.convert_to_date_object(soup.findAll('span', attrs={'class', 'UpdateDate'})[0].findAll()[0].attrs['datetime'])
           }
     return dic_result
 
