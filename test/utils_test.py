@@ -3,8 +3,8 @@ from tenseijingoscraper.utils import DateHandling
 
 
 class TestDateHandling(unittest.TestCase):
-    def test_get_date_n_days_ago(self):
-        self.assertEqual(DateHandling.get_date_n_days_ago('20191003', 2), '20191001')
+    def test_get_str_date_n_days_ago(self):
+        self.assertEqual(DateHandling.get_str_date_n_days_ago('20191003', 2), '20191001')
 
     def test_rearrange_date_arguments(self):
         date_from, date_to = DateHandling.rearrange_date_arguments('20190101', '20181231')
