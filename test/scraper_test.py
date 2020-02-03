@@ -11,6 +11,7 @@ class TestScraper(unittest.TestCase):
         cls.user_pw = userinfo.password
         cls.obj = AsahiSession(cls.user_id, cls.user_pw)
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
+        cls.test_url2 = 'https://digital.asahi.com/articles/DA3S14295448.html'
 
     def test_get_contents_from_url(self):
         self.assertIsInstance(
@@ -21,8 +22,10 @@ class TestScraper(unittest.TestCase):
     def test_get_contents_from_urls(self):
         results = scraper.get_contents_from_urls([self.test_url])
         self.assertIsInstance(results, list)
-        for res in results:
-            self.assertIsInstance(res, bs)
+        for res1, res2 in results:
+            self.assertIsInstance(res1, str)
+            self.assertRegex(res1, '^20\d\d[0-1]{1}\d[0-3]\d$')
+            self.assertIsInstance(res2, bs)
 
     def test_convert_content_bs_to_dict(self):
         result_ok = scraper.convert_content_bs_to_dict(self.test_url)
