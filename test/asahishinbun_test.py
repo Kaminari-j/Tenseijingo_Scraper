@@ -1,8 +1,8 @@
 import unittest
 import re
 from bs4 import BeautifulSoup as bs
-from tenseijingoscraper import asahishinbun, userinfo
-from tenseijingoscraper.scraper import AsahiShinbunScraper
+from tenseijingoscraper import asahishinbun, userinfo, scraper
+from tenseijingoscraper.asahishinbun import AsahiSession
 
 
 class TestAsahishinbun(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestAsahishinbun(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.user_id = userinfo.id
         cls.user_pw = userinfo.password
-        cls.obj = AsahiShinbunScraper(cls.user_id, cls.user_pw)
+        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
 
     def test_convert_url(self):
@@ -19,8 +19,7 @@ class TestAsahishinbun(unittest.TestCase):
         self.assertRegex(asahishinbun.convert_url(url), pattern)
 
     def test_making_html(self):
-        results = self.obj.get_contents_from_url(self.test_url)
-        content_result = self.obj.convert_content_bs_to_dict(results)
+        content_result = scraper.convert_content_bs_to_dict(self.test_url)
         result = asahishinbun.convert_to_html(content_result)
         # result should be formatted by Head(H1, H3) and body
         content = bs(result, 'html.parser')
@@ -30,6 +29,24 @@ class TestAsahishinbun(unittest.TestCase):
         char_re = re.compile(r"(?is)content=[\"'].*?;\s*charset=(.*?)[\"']")
         chk_result = char_re.search(result)
         self.assertTrue('utf-8' in chk_result.group())
+
+
+class TestAsahiSession(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.user_id = userinfo.id
+        cls.user_pw = userinfo.password
+        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
+        cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
+
+    def test_init(self):
+        self.assertEqual(self.obj.id, self.user_id)
+        self.assertEqual(self.obj.password, self.user_pw)
+
+    def test_open_session(self):
+        import requests
+        s = self.obj.open_session()
+        self.assertIsInstance(s, requests.Session)
 
 
 if __name__ == '__main__':
