@@ -1,5 +1,5 @@
 import unittest
-from tenseijingoscraper import downloader
+from tenseijingoscraper import tenseijingo
 
 
 class TestTenseijingo(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestTenseijingo(unittest.TestCase):
         date_from = '20191215'
         date_to = '20190101'
         download_path = r'./html'
-        downloader.get_html_with_date(date_from, date_to, download_path)
+        tenseijingo.get_html_with_date(date_from, date_to, download_path)
         date_strings = ['{0}.{1}'.format(d.strftime('%Y%m%d'), 'html') for d in [dt.strptime('20190101', '%Y%m%d'), dt.strptime('20191215', '%Y%m%d')]]
         files_only = [f for f in listdir(download_path) if isfile(join(download_path, f))]
 
