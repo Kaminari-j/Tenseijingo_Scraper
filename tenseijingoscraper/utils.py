@@ -7,13 +7,13 @@ class DateHandling:
 
     def __init__(self, date_list: list, date1: str, date2=None):
         if date2 is None:
-            date2 = DateHandling.get_date_n_days_ago(date1, 90)
+            date2 = DateHandling.get_str_date_n_days_ago(date1, 90)
         self.date_from, self.date_to = DateHandling.rearrange_date_arguments(date1, date2)
         self.date_from = DateHandling.get_substantive_start_date(self.date_from, date_list)
         self.date_to = DateHandling.get_substantive_end_date(self.date_to, date_list)
 
     @staticmethod
-    def get_date_n_days_ago(argdate: str, n: int):
+    def get_str_date_n_days_ago(argdate: str, n: int):
         """
         :param argdate: a reference date string
         :param n: days apart from argdate
