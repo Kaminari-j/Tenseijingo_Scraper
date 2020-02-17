@@ -2,14 +2,16 @@
 import os
 from tenseijingoscraper import userinfo, asahishinbun, scraper
 from tenseijingoscraper.asahishinbun import AsahiSession
+import tenseijingoscraper.utils as utils
 from tenseijingoscraper.utils import DateHandling
 
 
-def get_html_with_date(date1: str, date2=None, download_path=None):
+def get_html_with_date(date1: str, date2: str = None, download_path: str = None):
     if download_path is None:
         download_path = r'./html'
     if not os.path.exists(download_path):
         os.makedirs(download_path)
+    print(f'Working Directory is {download_path}')
 
     # https://digital.asahi.com User Id and Password
     user_id = userinfo.id
@@ -28,24 +30,22 @@ def get_html_with_date(date1: str, date2=None, download_path=None):
         idx_from = list_of_dates.index(t_date.date_from)
         idx_to = list_of_dates.index(t_date.date_to) + 1
 
-        for content_date in list_of_dates[idx_from:idx_to]:
-            print(content_date, end=': ')
-            html_name = download_path + '/' + content_date + '.html'
-            if not os.path.exists(html_name):
-                content_dic = article_list[content_date]
-                content = scraper.convert_content_bs_to_dict(content_dic['url'])
-
-                print('Downloading.. ' + html_name.split('/')[-1])
-                html = asahishinbun.convert_to_html(content)
-                with open(html_name, 'w') as f:
-                    f.write(html)
-                    f.close()
+        for cDate in list_of_dates[idx_from:idx_to]:
+            print(cDate, end=': ')
+            html_file_full_name = utils.making_file_name(download_path, cDate)
+            if not os.path.exists(html_file_full_name):
+                content = scraper.convert_content_bs_to_dict(article_list[cDate]['url'])
+                html = asahishinbun.convert_to_html(content['title'], content['datetime'], content['content'])
+                utils.create_file(html_file_full_name, html)
+                print('Downloaded. ')
             else:
-                print('skip')
+                print('skipped.')
     except ConnectionError as e:
         print(e)
 
 
-def run():
+def run(f_date: str = None, t_date: str = None, download_path: str = None):
     from datetime import date
-    get_html_with_date(date.today().strftime('%Y%m%d'))
+    if not f_date:
+        f_date = date.today().strftime('%Y%m%d')
+    get_html_with_date(f_date, t_date, download_path)

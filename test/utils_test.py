@@ -1,5 +1,28 @@
 import unittest
+import tenseijingoscraper.utils as utils
 from tenseijingoscraper.utils import DateHandling
+
+
+class TestUtils(unittest.TestCase):
+    def test_create_file(self):
+        import os
+        test_string = 'this is test'
+        test_file_full_path = r'./testfile.html'
+        if os.path.exists(test_file_full_path):
+            os.remove(test_file_full_path)
+        # test1 : return True if file created successfully
+        self.assertTrue(utils.create_file(test_file_full_path, test_string))
+        # test2 : file should be created at designated path
+        self.assertTrue(os.path.exists(test_file_full_path))
+        # test3 : return False if file already exists
+        if os.path.exists(test_file_full_path):
+            os.remove(test_file_full_path)
+        with self.assertRaises(IOError):
+            print(utils.create_file(r'./wrong_directory_which_is_not_exists/testfile.html', test_string))
+
+    def test_making_file_name(self):
+        # file name should be combination of path and filename(date) with .html
+        self.assertEqual('./testdirectory/20200217.html', utils.making_file_name('./testdirectory', '20200217'))
 
 
 class TestDateHandling(unittest.TestCase):
