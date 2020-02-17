@@ -36,7 +36,7 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
                 contents = article_list[content_date]
                 content = scraper.convert_content_bs_to_dict(contents['url'])
 
-                html = asahishinbun.convert_to_html(content)
+                html = asahishinbun.convert_to_html(content['title'], str(content['datetime']), content['content'])
                 with open(html_name, 'w') as f:
                     f.write(html)
                     f.close()
