@@ -31,10 +31,10 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
 
         for content_date in list_of_dates[idx_from:idx_to]:
             print(content_date, end=': ')
-            html_name = utils.making_file_name(download_path, content_date) 
+            html_name = utils.making_file_name(download_path, content_date)
             if not os.path.exists(html_name):
-                content_dic = article_list[content_date]
-                content = scraper.convert_content_bs_to_dict(content_dic['url'])
+                contents = article_list[content_date]
+                content = scraper.convert_content_bs_to_dict(contents['url'])
 
                 print('Downloading.. ' + html_name.split('/')[-1])
                 html = asahishinbun.convert_to_html(content)
