@@ -1,8 +1,15 @@
+import os
 from datetime import timedelta, datetime as dt
 
 
-def create_file():
-    return False
+def create_file(file_full_name: str, html: str):
+    try:
+        with open(file_full_name, 'w') as f:
+            f.write(html)
+            f.close()
+        return True
+    except IOError:
+        raise IOError('[Error] : Failed to create html file.')
 
 
 def making_file_name(path: str, filenm: str) -> str:
