@@ -1,9 +1,10 @@
 from datetime import timedelta, datetime as dt
 
 
-def making_file_name(path: str, filenm: str):
+def making_file_name(path: str, filenm: str) -> str:
     """
     create file name with `path` and `filenm` argument
+    :rtype: str
     :param path: directory path of file
     :param filenm: name of file
     :return: [directory path]/[filenm].html
