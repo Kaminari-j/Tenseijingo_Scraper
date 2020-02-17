@@ -6,7 +6,10 @@ from tenseijingoscraper.utils import DateHandling
 class TestUtils(unittest.TestCase):
     def test_create_file(self):
         # file should be created at designated path
-        pass
+        # return False if file already exists
+        self.assertFalse(utils.create_file())
+        # return True if file created successfully
+        self.assertTrue(utils.create_file())
 
     def test_making_file_name(self):
         # file name should be combination of path and filename(date) with .html
