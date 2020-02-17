@@ -19,14 +19,6 @@ class TestScraper(unittest.TestCase):
             bs
         )
 
-    def test_get_contents_from_urls(self):
-        results = scraper.get_contents_from_urls([self.test_url])
-        self.assertIsInstance(results, list)
-        for res1, res2 in results:
-            self.assertIsInstance(res1, str)
-            self.assertRegex(res1, '^20\d\d[0-1]{1}\d[0-3]\d$')
-            self.assertIsInstance(res2, bs)
-
     def test_convert_content_bs_to_dict(self):
         result_ok = scraper.convert_content_bs_to_dict(self.test_url)
         # result_should_be_instance_of_dict
