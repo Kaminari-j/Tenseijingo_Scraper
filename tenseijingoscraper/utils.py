@@ -1,6 +1,10 @@
 from datetime import timedelta, datetime as dt
 
 
+def making_file_name(path: str, filenm: str):
+    return f'{path}/{filenm}.html'
+
+
 class DateHandling:
     date_from = None
     date_to = None

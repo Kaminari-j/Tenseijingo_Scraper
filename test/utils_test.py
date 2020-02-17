@@ -1,5 +1,16 @@
 import unittest
+import tenseijingoscraper.utils as utils
 from tenseijingoscraper.utils import DateHandling
+
+
+class TestUtils(unittest.TestCase):
+    def test_create_file(self):
+        # file should be created at designated path
+        pass
+
+    def test_making_file_name(self):
+        # file name should be combination of path and filename(date) with .html
+        self.assertEqual('./testdirectory/20200217.html', utils.making_file_name('./testdirectory', '20200217'))
 
 
 class TestDateHandling(unittest.TestCase):
