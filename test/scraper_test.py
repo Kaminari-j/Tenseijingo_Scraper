@@ -35,7 +35,7 @@ class TestScraper(unittest.TestCase):
         import datetime
         self.assertIsInstance(result_ok['title'], str)
         self.assertIsInstance(result_ok['content'], str)
-        self.assertIsInstance(result_ok['datetime'], datetime.datetime)
+        self.assertIsInstance(result_ok['datetime'], str)
 
     def test_get_backnumber_list(self):
         result = scraper.get_backnumber_list()
