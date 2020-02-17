@@ -5,7 +5,7 @@ from tenseijingoscraper.asahishinbun import AsahiSession
 from tenseijingoscraper.utils import DateHandling
 
 
-def get_html_with_date(date1: str, date2=None, download_path=None):
+def get_html_with_date(date1: str, date2: str = None, download_path: str = None):
     if download_path is None:
         download_path = r'./html'
     if not os.path.exists(download_path):
