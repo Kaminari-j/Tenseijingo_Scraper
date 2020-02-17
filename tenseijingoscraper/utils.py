@@ -1,6 +1,10 @@
 from datetime import timedelta, datetime as dt
 
 
+def create_file():
+    return False
+
+
 def making_file_name(path: str, filenm: str) -> str:
     """
     create file name with `path` and `filenm` argument
