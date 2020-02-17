@@ -46,6 +46,8 @@ def get_html_with_date(date1: str, date2=None, download_path=None):
         print(e)
 
 
-def run():
+def run(f_date: str = None, t_date: str = None, download_path: str = None):
     from datetime import date
-    get_html_with_date(date.today().strftime('%Y%m%d'))
+    if not f_date:
+        f_date = date.today().strftime('%Y%m%d')
+    get_html_with_date(f_date, t_date, download_path)
