@@ -2,6 +2,7 @@
 import os
 from tenseijingoscraper import userinfo, asahishinbun, scraper
 from tenseijingoscraper.asahishinbun import AsahiSession
+import tenseijingoscraper.utils as utils
 from tenseijingoscraper.utils import DateHandling
 
 
@@ -30,7 +31,7 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
 
         for content_date in list_of_dates[idx_from:idx_to]:
             print(content_date, end=': ')
-            html_name = download_path + '/' + content_date + '.html'
+            html_name = utils.making_file_name(download_path, content_date) 
             if not os.path.exists(html_name):
                 content_dic = article_list[content_date]
                 content = scraper.convert_content_bs_to_dict(content_dic['url'])
