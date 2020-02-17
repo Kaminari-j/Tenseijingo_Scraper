@@ -36,11 +36,11 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
                 contents = article_list[content_date]
                 content = scraper.convert_content_bs_to_dict(contents['url'])
 
-                print('Downloading.. ' + html_name.split('/')[-1])
                 html = asahishinbun.convert_to_html(content)
                 with open(html_name, 'w') as f:
                     f.write(html)
                     f.close()
+                    print('Downloaded.. ' + html_name.split('/')[-1])
             else:
                 print('skip')
     except ConnectionError as e:
