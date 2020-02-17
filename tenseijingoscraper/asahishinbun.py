@@ -27,18 +27,18 @@ def convert_url(url: str):
         raise ValueError('Invalid URL')
 
 
-def convert_to_html(content: dict):
-    html = '<!DOCTYPE html> \
+def convert_to_html(title: str, uploaded_date: str, content: str):
+    html = f'<!DOCTYPE html> \
                 <html>\
                     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> \
                     <head>\
-                        <h1>{0}</h1> \
-                        <h3 align="right">{1}</h3>\
+                        <h1>{title}</h1> \
+                        <h3 align="right">{uploaded_date}</h3>\
                     </head>\
                     <body> \
-                        <p>{2}</p> \
+                        <p>{content}</p> \
                     </body>\
-                </html>'.format(content['title'], str(content['datetime']), content['content'])
+                </html>'
     return html
 
 

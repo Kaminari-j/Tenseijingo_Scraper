@@ -20,7 +20,7 @@ class TestAsahishinbun(unittest.TestCase):
 
     def test_making_html(self):
         content_result = scraper.convert_content_bs_to_dict(self.test_url)
-        result = asahishinbun.convert_to_html(content_result)
+        result = asahishinbun.convert_to_html(content_result['title'], str(content_result['datetime']), content_result['content'])
         # result should be formatted by Head(H1, H3) and body
         content = bs(result, 'html.parser')
         self.assertGreater(len(content.find_all('head')), 0, "There's no head")
