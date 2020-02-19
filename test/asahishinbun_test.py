@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup as bs
 from tenseijingoscraper import asahishinbun, userinfo, scraper
 from tenseijingoscraper.asahishinbun import AsahiSession
 
+# Todo : User ID/Password 가 설정되어 있지 않는 경우에도 테스트를 할 수 있도록 할 것
+
 
 class TestAsahishinbun(unittest.TestCase):
     @classmethod
