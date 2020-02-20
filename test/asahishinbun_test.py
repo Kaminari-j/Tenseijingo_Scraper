@@ -7,21 +7,25 @@ from tenseijingoscraper.asahishinbun import AsahiSession
 # Todo : User ID/Password 가 설정되어 있지 않는 경우에도 테스트를 할 수 있도록 할 것
 
 
-class TestAsahishinbun(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.user_id = userinfo.id
-        cls.user_pw = userinfo.password
-        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
-        cls.s = cls.obj.open_session()
-        cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
-
+class TestConvertUrl(unittest.TestCase):
     def test_convert_url(self):
         url = '/articles/DA3S14048182.html?iref=tenseijingo_backnumber'
         pattern = r'^http(s)?://digital\.asahi\.com/articles/(\d|\D)+\.html$'
         self.assertRegex(asahishinbun.convert_url(url), pattern)
 
-    def test_making_html(self):
+
+class TestConvertToHtml(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.user_id = userinfo.id
+        cls.user_pw = userinfo.password
+        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
+        cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
+
+    # Todo : save content as a file when scraper.get_contents_from_url() called and use it for this test
+    @unittest.skipIf(not userinfo.id and not userinfo.password, 'Userinfo not set')
+    def test_convert_to_html(self):
+        s = self.obj.open_session()
         content_result = scraper.convert_content_bs_to_dict(self.s, self.test_url)
         result = asahishinbun.convert_to_html(content_result['title'], content_result['datetime'], content_result['content'])
         # result should be formatted by Head(H1, H3) and body
