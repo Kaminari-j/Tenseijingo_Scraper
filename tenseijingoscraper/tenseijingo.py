@@ -33,15 +33,15 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
             idx_from = list_of_dates.index(t_date.date_from)
             idx_to = list_of_dates.index(t_date.date_to) + 1
 
-            for cDate in list_of_dates[idx_from:idx_to]:
+            for _date in list_of_dates[idx_from:idx_to]:
                 # Print day
-                print(cDate, end=': ')
+                print(_date, end=': ')
                 # Get full path of the day
-                html_file_full_path = utils.naming_file(download_path, cDate)
+                html_file_full_path = utils.naming_file(download_path, _date)
                 # Check existence html file of the day
                 if not os.path.exists(html_file_full_path):
                     # Make dict with a content of the day
-                    content = scraper.convert_content_bs_to_dict(s, article_list[cDate]['url'])
+                    content = scraper.convert_content_bs_to_dict(s, article_list[_date]['url'])
                     # Make html(str) with dict of the day
                     html = asahishinbun.convert_to_html(content['title'], content['datetime'], content['content'])
                     # Make html file with html string
