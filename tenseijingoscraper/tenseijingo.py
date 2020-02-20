@@ -9,8 +9,11 @@ from tenseijingoscraper.utils import DateHandling
 def get_html_with_date(date1: str, date2: str = None, download_path: str = None):
     if download_path is None:
         download_path = r'./html'
-    if not os.path.exists(download_path):
-        os.makedirs(download_path)
+
+    _prepared = utils.prepare_directory(download_path)
+    if not _prepared:
+        exit(1)
+
     print(f'Working Directory is {download_path}')
 
     # https://digital.asahi.com User Id and Password

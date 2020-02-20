@@ -1,3 +1,4 @@
+import os
 import unittest
 import tenseijingoscraper.utils as utils
 from tenseijingoscraper.utils import DateHandling
@@ -5,7 +6,6 @@ from tenseijingoscraper.utils import DateHandling
 
 class TestUtils(unittest.TestCase):
     def test_create_file(self):
-        import os
         test_string = 'this is test'
         test_file_full_path = r'./testfile.html'
         if os.path.exists(test_file_full_path):
@@ -23,6 +23,17 @@ class TestUtils(unittest.TestCase):
     def test_making_file_name(self):
         # file name should be combination of path and filename(date) with .html
         self.assertEqual('./testdirectory/20200217.html', utils.making_file_name('./testdirectory', '20200217'))
+
+    def test_prepare_directory(self):
+        p = './test_directory'
+        if os.path.exists(p):
+            os.rmdir(p)
+        # When failed to make directory
+        self.assertEqual(None, utils.prepare_directory('/NotExists/Directory'))
+        # Success
+        self.assertEqual(p, utils.prepare_directory(p))
+        if os.path.exists(p):
+            os.rmdir(p)
 
 
 class TestDateHandling(unittest.TestCase):

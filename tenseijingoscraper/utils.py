@@ -23,6 +23,24 @@ def making_file_name(path: str, filenm: str) -> str:
     return f'{path}/{filenm}.html'
 
 
+def prepare_directory(directory_path: str) -> bool:
+    """
+    check exist of directory
+    :param directory_path:
+    :return: bool
+        Does directory has been created or exists
+    """
+    if os.path.exists(directory_path):
+        return True
+    else:
+        try:
+            os.makedirs(directory_path)
+            return True
+        except:
+            print(f'Error : Failed To Create Directory "{directory_path}"\nPlease Check Directories')
+            return False
+
+
 class DateHandling:
     date_from = None
     date_to = None
