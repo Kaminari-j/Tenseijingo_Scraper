@@ -12,7 +12,7 @@ def create_file(file_full_name: str, html: str):
         raise IOError('[Error] : Failed to create html file.')
 
 
-def making_file_name(path: str, filenm: str) -> str:
+def naming_file(path: str, filenm: str) -> str:
     """
     create file name with `path` and `filenm` argument
     :rtype: str
@@ -21,6 +21,24 @@ def making_file_name(path: str, filenm: str) -> str:
     :return: [directory path]/[filenm].html
     """
     return f'{path}/{filenm}.html'
+
+
+def prepare_directory(directory_path: str) -> bool:
+    """
+    check exist of directory
+    :param directory_path:
+    :return: bool
+        Does directory has been created or exists
+    """
+    if os.path.exists(directory_path):
+        return True
+    else:
+        try:
+            os.makedirs(directory_path)
+            return True
+        except:
+            print(f'Error : Failed To Create Directory "{directory_path}"\nPlease Check Directories')
+            return False
 
 
 class DateHandling:

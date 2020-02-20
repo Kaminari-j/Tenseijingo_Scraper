@@ -14,15 +14,11 @@ def get_contents_from_url(s: requests.session, url: str):
     :return: BeautifulSoup
         コンテンツ
     """
-    if url:
-        with s:
-            res = s.get(url)
-            if res.status_code != 200:
-                raise ConnectionError
+    with s:
+        res = s.get(url)
+        if res.status_code == 200:
             res.encoding = res.apparent_encoding
             return bs(res.text, 'html.parser')
-    else:
-        raise ValueError
 
 
 def get_contents_from_urls(s: requests.session, urls: list):
