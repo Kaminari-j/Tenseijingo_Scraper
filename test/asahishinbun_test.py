@@ -25,17 +25,17 @@ class TestConvertToHtml(unittest.TestCase):
     # Todo : save content as a file when scraper.get_contents_from_url() called and use it for this test
     @unittest.skipIf(not userinfo.id and not userinfo.password, 'Userinfo not set')
     def test_convert_to_html(self):
-        s = self.obj.open_session()
-        content_result = scraper.convert_content_bs_to_dict(self.s, self.test_url)
-        result = asahishinbun.convert_to_html(content_result['title'], content_result['datetime'], content_result['content'])
-        # result should be formatted by Head(H1, H3) and body
-        content = bs(result, 'html.parser')
-        self.assertGreater(len(content.find_all('head')), 0, "There's no head")
-        self.assertGreater(len(content.find_all('body')), 0, "There's no body")
-        # encoding
-        char_re = re.compile(r"(?is)content=[\"'].*?;\s*charset=(.*?)[\"']")
-        chk_result = char_re.search(result)
-        self.assertTrue('utf-8' in chk_result.group())
+        with self.obj.open_session() as s:
+            content_result = scraper.convert_content_bs_to_dict(s, self.test_url)
+            result = asahishinbun.convert_to_html(content_result['title'], content_result['datetime'], content_result['content'])
+            # result should be formatted by Head(H1, H3) and body
+            content = bs(result, 'html.parser')
+            self.assertGreater(len(content.find_all('head')), 0, "There's no head")
+            self.assertGreater(len(content.find_all('body')), 0, "There's no body")
+            # encoding
+            char_re = re.compile(r"(?is)content=[\"'].*?;\s*charset=(.*?)[\"']")
+            chk_result = char_re.search(result)
+            self.assertTrue('utf-8' in chk_result.group())
 
 
 class TestAsahiSession(unittest.TestCase):
