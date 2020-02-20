@@ -41,10 +41,6 @@ class TestAsahiSession(unittest.TestCase):
         cls.user_pw = userinfo.password
         cls.obj = AsahiSession(cls.user_id, cls.user_pw)
 
-    def test_init(self):
-        self.assertEqual(self.obj.id, self.user_id)
-        self.assertEqual(self.obj.password, self.user_pw)
-
     def test_open_session(self):
         import requests
         s = self.obj.open_session()
