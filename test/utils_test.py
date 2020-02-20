@@ -29,9 +29,9 @@ class TestUtils(unittest.TestCase):
         if os.path.exists(p):
             os.rmdir(p)
         # When failed to make directory
-        self.assertEqual(None, utils.prepare_directory('/NotExists/Directory'))
+        self.assertFalse(utils.prepare_directory('/NotExists/Directory'))
         # Success
-        self.assertEqual(p, utils.prepare_directory(p))
+        self.assertTrue(utils.prepare_directory(p))
         if os.path.exists(p):
             os.rmdir(p)
 
