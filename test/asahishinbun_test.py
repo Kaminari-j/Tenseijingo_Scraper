@@ -40,7 +40,6 @@ class TestAsahiSession(unittest.TestCase):
         cls.user_id = userinfo.id
         cls.user_pw = userinfo.password
         cls.obj = AsahiSession(cls.user_id, cls.user_pw)
-        cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
 
     def test_init(self):
         self.assertEqual(self.obj.id, self.user_id)
