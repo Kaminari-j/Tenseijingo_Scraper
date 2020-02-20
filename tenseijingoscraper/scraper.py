@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
+import requests
 from bs4 import BeautifulSoup as bs
 from tenseijingoscraper import asahishinbun
 from tenseijingoscraper.utils import DateHandling
 
 
-def get_contents_from_url(url: str):
+def get_contents_from_url(s: requests.session, url: str):
     """
     URLから天声人語コンテンツを取得する
+    :param s: requests.session
     :param url: str
         コンテンツ取得対象のURL
     :return: BeautifulSoup
         コンテンツ
     """
     if url:
-        with asahishinbun.AsahiSession.open_session() as s:
+        with s:
             res = s.get(url)
             if res.status_code != 200:
                 raise ConnectionError
@@ -23,16 +25,17 @@ def get_contents_from_url(url: str):
         raise ValueError
 
 
-def get_contents_from_urls(urls: list):
+def get_contents_from_urls(s: requests.session, urls: list):
     """
     (deprecated) URLのリストから天声人語コンテンツを取得する
+    :param s: requests.session
     :param urls: list
         コンテンツ取得対象のURL
     :return: list[BeautifulSoup]
         コンテンツ
     """
     if urls:
-        with asahishinbun.AsahiSession.open_session() as s:
+        with s:
             results = list()
             for url in urls:
                 res = s.get(url)
@@ -45,9 +48,9 @@ def get_contents_from_urls(urls: list):
         raise ValueError
 
 
-def convert_content_bs_to_dict(url):
+def convert_content_bs_to_dict(s: requests.session, url):
     from datetime import datetime
-    soup = get_contents_from_url(url)
+    soup = get_contents_from_url(s, url)
     dic_result = {
           'title': soup.findAll('h1')[0].text,
           'content': soup.findAll('div', attrs={'class', 'ArticleText'})[0].text,
@@ -56,8 +59,8 @@ def convert_content_bs_to_dict(url):
     return dic_result
 
 
-def get_backnumber_list():
-    soup = get_contents_from_url(asahishinbun.content_list_url)
+def get_backnumber_list(s: requests.session):
+    soup = get_contents_from_url(s, asahishinbun.content_list_url)
     panels = soup.findAll('div', attrs={'class', 'TabPanel'})
     dic_article = dict()
     for panel in panels:
