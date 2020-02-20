@@ -17,12 +17,12 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
     user_id = userinfo.id
     user_password = userinfo.password
 
-    s = AsahiSession(user_id, user_password)
+    asahisession = AsahiSession(user_id, user_password)
     try:
-        s.open_session()
+        s = asahisession.open_session()
 
         # Get list of content
-        article_list = scraper.get_backnumber_list()
+        article_list = scraper.get_backnumber_list(s)
         list_of_dates = [dt for dt in article_list.keys()]
         list_of_dates.sort()
         t_date = DateHandling(list_of_dates, date1, date2)
@@ -34,7 +34,7 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
             print(cDate, end=': ')
             html_file_full_name = utils.making_file_name(download_path, cDate)
             if not os.path.exists(html_file_full_name):
-                content = scraper.convert_content_bs_to_dict(article_list[cDate]['url'])
+                content = scraper.convert_content_bs_to_dict(s, article_list[cDate]['url'])
                 html = asahishinbun.convert_to_html(content['title'], content['datetime'], content['content'])
                 utils.create_file(html_file_full_name, html)
                 print('Downloaded. ')

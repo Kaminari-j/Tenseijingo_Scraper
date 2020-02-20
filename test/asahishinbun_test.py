@@ -13,6 +13,7 @@ class TestAsahishinbun(unittest.TestCase):
         cls.user_id = userinfo.id
         cls.user_pw = userinfo.password
         cls.obj = AsahiSession(cls.user_id, cls.user_pw)
+        cls.s = cls.obj.open_session()
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
 
     def test_convert_url(self):
@@ -21,7 +22,7 @@ class TestAsahishinbun(unittest.TestCase):
         self.assertRegex(asahishinbun.convert_url(url), pattern)
 
     def test_making_html(self):
-        content_result = scraper.convert_content_bs_to_dict(self.test_url)
+        content_result = scraper.convert_content_bs_to_dict(self.s, self.test_url)
         result = asahishinbun.convert_to_html(content_result['title'], content_result['datetime'], content_result['content'])
         # result should be formatted by Head(H1, H3) and body
         content = bs(result, 'html.parser')

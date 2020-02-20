@@ -10,17 +10,18 @@ class TestScraper(unittest.TestCase):
         cls.user_id = userinfo.id
         cls.user_pw = userinfo.password
         cls.obj = AsahiSession(cls.user_id, cls.user_pw)
+        cls.s = cls.obj.open_session()
         cls.test_url = 'https://digital.asahi.com/articles/DA3S14297045.html'
         cls.test_url2 = 'https://digital.asahi.com/articles/DA3S14295448.html'
 
     def test_get_contents_from_url(self):
         self.assertIsInstance(
-            scraper.get_contents_from_url(self.test_url),
+            scraper.get_contents_from_url(self.s, self.test_url),
             bs
         )
 
     def test_convert_content_bs_to_dict(self):
-        result_ok = scraper.convert_content_bs_to_dict(self.test_url)
+        result_ok = scraper.convert_content_bs_to_dict(self.s, self.test_url)
         # result_should_be_instance_of_dict
         self.assertIsInstance(result_ok, dict)
         # check element's type
@@ -30,7 +31,7 @@ class TestScraper(unittest.TestCase):
         self.assertIsInstance(result_ok['datetime'], str)
 
     def test_get_backnumber_list(self):
-        result = scraper.get_backnumber_list()
+        result = scraper.get_backnumber_list(self.s)
         self.assertIsInstance(result, dict)
         # count_of_result
         self.assertTrue(1 <= len(result) <= 122)
