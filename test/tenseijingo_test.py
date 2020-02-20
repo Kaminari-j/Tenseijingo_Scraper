@@ -3,7 +3,7 @@ from tenseijingoscraper import tenseijingo
 
 
 class TestTenseijingo(unittest.TestCase):
-    @unittest.skip
+    @unittest.skip('작성중')
     def test_get_html_with_date(self):
         from datetime import datetime as dt
         from os import listdir
