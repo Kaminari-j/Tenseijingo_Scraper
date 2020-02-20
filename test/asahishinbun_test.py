@@ -35,16 +35,15 @@ class TestAsahishinbun(unittest.TestCase):
 
 
 class TestAsahiSession(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.user_id = userinfo.id
-        cls.user_pw = userinfo.password
-        cls.obj = AsahiSession(cls.user_id, cls.user_pw)
-
-    def test_open_session(self):
+    @unittest.skipIf(not userinfo.id and not userinfo.password, 'Userinfo not set')
+    def test_open_session_ok(self):
         import requests
-        s = self.obj.open_session()
+        s = AsahiSession(userinfo.id, userinfo.password).open_session()
         self.assertIsInstance(s, requests.Session)
+
+    def test_open_session_ng(self):
+        with self.assertRaises(ConnectionError):
+            AsahiSession(None, None).open_session()
 
 
 if __name__ == '__main__':
