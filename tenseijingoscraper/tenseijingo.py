@@ -17,29 +17,27 @@ def get_html_with_date(date1: str, date2: str = None, download_path: str = None)
     user_id = userinfo.id
     user_password = userinfo.password
 
-    asahisession = AsahiSession(user_id, user_password)
     try:
-        s = asahisession.open_session()
+        with AsahiSession(user_id, user_password).open_session() as s:
+            # Get list of content
+            article_list = scraper.get_backnumber_list(s)
+            list_of_dates = [dt for dt in article_list.keys()]
+            list_of_dates.sort()
+            t_date = DateHandling(list_of_dates, date1, date2)
 
-        # Get list of content
-        article_list = scraper.get_backnumber_list(s)
-        list_of_dates = [dt for dt in article_list.keys()]
-        list_of_dates.sort()
-        t_date = DateHandling(list_of_dates, date1, date2)
-        
-        idx_from = list_of_dates.index(t_date.date_from)
-        idx_to = list_of_dates.index(t_date.date_to) + 1
+            idx_from = list_of_dates.index(t_date.date_from)
+            idx_to = list_of_dates.index(t_date.date_to) + 1
 
-        for cDate in list_of_dates[idx_from:idx_to]:
-            print(cDate, end=': ')
-            html_file_full_name = utils.making_file_name(download_path, cDate)
-            if not os.path.exists(html_file_full_name):
-                content = scraper.convert_content_bs_to_dict(s, article_list[cDate]['url'])
-                html = asahishinbun.convert_to_html(content['title'], content['datetime'], content['content'])
-                utils.create_file(html_file_full_name, html)
-                print('Downloaded. ')
-            else:
-                print('skipped.')
+            for cDate in list_of_dates[idx_from:idx_to]:
+                print(cDate, end=': ')
+                html_file_full_name = utils.making_file_name(download_path, cDate)
+                if not os.path.exists(html_file_full_name):
+                    content = scraper.convert_content_bs_to_dict(s, article_list[cDate]['url'])
+                    html = asahishinbun.convert_to_html(content['title'], content['datetime'], content['content'])
+                    utils.create_file(html_file_full_name, html)
+                    print('Downloaded. ')
+                else:
+                    print('skipped.')
     except ConnectionError as e:
         print(e)
 
