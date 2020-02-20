@@ -20,9 +20,9 @@ class TestUtils(unittest.TestCase):
         with self.assertRaises(IOError):
             print(utils.create_file(r'./wrong_directory_which_is_not_exists/testfile.html', test_string))
 
-    def test_making_file_name(self):
+    def test_naming_file(self):
         # file name should be combination of path and filename(date) with .html
-        self.assertEqual('./testdirectory/20200217.html', utils.making_file_name('./testdirectory', '20200217'))
+        self.assertEqual('./testdirectory/20200217.html', utils.naming_file('./testdirectory', '20200217'))
 
     def test_prepare_directory(self):
         p = './test_directory'

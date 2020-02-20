@@ -12,7 +12,7 @@ def create_file(file_full_name: str, html: str):
         raise IOError('[Error] : Failed to create html file.')
 
 
-def making_file_name(path: str, filenm: str) -> str:
+def naming_file(path: str, filenm: str) -> str:
     """
     create file name with `path` and `filenm` argument
     :rtype: str
